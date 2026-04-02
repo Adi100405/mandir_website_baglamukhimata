@@ -1354,7 +1354,7 @@
       const amount = 500; // change if needed
   
       // STEP 1: Create order from backend
-      const order = await fetch("http://localhost:5000/create-order", {
+      const order = await fetch("https://mandir-website-baglamukhimata.onrender.com/create-order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -1373,7 +1373,7 @@
   
         handler: async function (response) {
           // STEP 3: Verify payment
-          const verify = await fetch("http://localhost:5000/verify-payment", {
+          const verify = await fetch("https://mandir-website-baglamukhimata.onrender.com/verify-payment", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
