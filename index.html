@@ -630,6 +630,7 @@
     <li><a href="#services">Services</a></li>
     <li><a href="#pandits">Pandits</a></li>
     <li><a href="#timings">Timings</a></li>
+    <li><button class="nav-brand" onclick="payNow()" class="nav-cta">Donate Now  </button></li>
     <li><a href="#booking" class="nav-cta">Book Pooja</a></li>
   </ul>
 </nav>
@@ -921,7 +922,7 @@
             <span class="tag">Vivah</span>
           </div>
           <div class="pandit-avail"><span class="dot"></span> Available Today</div>
-          <button class="btn-book" onclick="openBookingPandit('Pt. Ramchandra Shastri')">Book Now</button>
+          <button class="btn-book" data-pandit="ram">Book Now</button>
         </div>
       </div>
 
@@ -937,7 +938,7 @@
             <span class="tag">Katha</span>
           </div>
           <div class="pandit-avail"><span class="dot"></span> Available Today</div>
-          <button class="btn-book" onclick="openBookingPandit('Pt. Vishwanath Mishra')">Book Now</button>
+          <button class="btn-book" data-pandit="vishwanath">Book Now</button>
         </div>
       </div>
 
@@ -969,7 +970,7 @@
             <span class="tag">Yagna</span>
           </div>
           <div class="pandit-avail"><span class="dot"></span> Available Today</div>
-          <button class="btn-book" onclick="openBookingPandit('Pt. Ankit Tiwari')">Book Now</button>
+          <button class="btn-book" data-pandit="ankit">Book Now</button>
         </div>
       </div>
 
@@ -1086,10 +1087,10 @@
           <label>Preferred Pandit</label>
           <select id="f-pandit">
             <option value="">— Any Available —</option>
-            <option>Pt. Ramchandra Shastri</option>
-            <option>Pt. Vishwanath Mishra</option>
-            <option>Pt. Suresh Dwivedi</option>
-            <option>Pt. Ankit Tiwari</option>
+            <option value="ram">Pt. Ramchandra Shastri</option>
+            <option value="vishwanath">Pt. Vishwanath Mishra</option>
+            <option value="suresh">Pt. Suresh Dwivedi</option>
+            <option value="ankit">Pt. Ankit Tiwari</option>
           </select>
         </div>
         <div class="form-group">
@@ -1214,6 +1215,7 @@
         <li><a href="#pandits">Our Pandits</a></li>
         <li><a href="#timings">Temple Timings</a></li>
         <li><a href="#booking">Book Now</a></li>
+        <li><a href="admin.html">🔐 Admin</a></li>
       </ul>
     </div>
     <div>
@@ -1345,6 +1347,89 @@
     }
   }
 </script>
-
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  async function payNow() {
+    try {
+      const amount = 500; // change if needed
+  
+      // STEP 1: Create order from backend
+      const order = await fetch("http://localhost:5000/create-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ amount })
+      }).then(res => res.json());
+  
+      // STEP 2: Open Razorpay
+      const options = {
+        key: "rzp_test_SYDCdIP7c7u4Vt", // 🔴 replace
+        amount: order.amount,
+        currency: "INR",
+        name: "Shri Baglamukhi Mandir",
+        description: "Donation",
+        order_id: order.id,
+  
+        handler: async function (response) {
+          // STEP 3: Verify payment
+          const verify = await fetch("http://localhost:5000/verify-payment", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              order_id: order.id,
+              payment_id: response.razorpay_payment_id,
+              signature: response.razorpay_signature
+            })
+          });
+  
+          const result = await verify.json();
+  
+          if (result.success) {
+            alert("✅ Payment Successful");
+          } else {
+            alert("❌ Payment Failed");
+          }
+        },
+  
+        theme: {
+          color: "#D4AF37"
+        }
+      };
+  
+      const rzp = new Razorpay(options);
+      rzp.open();
+  
+    } catch (err) {
+      console.error(err);
+      alert("Error occurred");
+    }
+  }
+  </script>
+  <script>
+    window.onload = function () {
+      document.querySelectorAll(".btn-book").forEach(button => {
+    
+        button.addEventListener("click", function () {
+    
+          const pandit = this.dataset.pandit;
+    
+          console.log("Clicked:", pandit); // DEBUG
+    
+          const select = document.getElementById("f-pandit");
+    
+          select.value = pandit;
+    
+          document.getElementById("booking").scrollIntoView({
+            behavior: "smooth"
+          });
+    
+        });
+    
+      });
+    };
+    </script>
 </body>
 </html>
