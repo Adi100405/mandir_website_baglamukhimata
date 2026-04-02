@@ -209,9 +209,20 @@
 
     <!-- Tabs -->
     <div class="tabs">
-      <button class="tab" onclick="switchTab('bookings')">Bookings</button>
-      <button class="tab active" onclick="switchTab('orders')">Orders</button>
-      <button class="tab" onclick="switchTab('payments')">Payments</button>
+      <button class="tab" onclick="switchTab(event, 'bookings')">Bookings</button>
+      <button class="tab active" onclick="switchTab(event,'orders')">Orders</button>
+      <button class="tab" onclick="switchTab(event,'payments')">Payments</button>
+    </div>
+
+    <!-- Bookings Tab -->
+    <div id="tab-bookings" class="tab-content">
+      <div class="table-wrap">
+        <div class="table-header">
+          <h2>All Bookings</h2>
+          <button class="refresh-btn" onclick="loadBookings()">↻ Refresh</button>
+        </div>
+        <div id="bookings-body"><div class="loading">Loading Bookings…</div></div>
+      </div>
     </div>
 
     <!-- Orders Tab -->
@@ -221,7 +232,7 @@
           <h2>All Orders</h2>
           <button class="refresh-btn" onclick="loadOrders()">↻ Refresh</button>
         </div>
-        <div id="orders-body"><div class="loading">Loading orders…</div></div>
+        <div id="orders-body"><div class="loading">Loading Orders…</div></div>
       </div>
     </div>
 
@@ -273,11 +284,12 @@
     document.getElementById("password-input").value = "";
   }
 
-  function switchTab(tab) {
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
-    event.target.classList.add("active");
-    document.getElementById(`tab-${tab}`).classList.add("active");
+  function switchTab(e, tab) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+
+  e.target.classList.add("active");
+  document.getElementById(`tab-${tab}`).classList.add("active");
   }
 
   async function apiFetch(path) {
