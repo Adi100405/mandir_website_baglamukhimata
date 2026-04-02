@@ -209,6 +209,7 @@
 
     <!-- Tabs -->
     <div class="tabs">
+      <button class="tab" onclick="switchTab('bookings')">Bookings</button>
       <button class="tab active" onclick="switchTab('orders')">Orders</button>
       <button class="tab" onclick="switchTab('payments')">Payments</button>
     </div>
@@ -226,10 +227,11 @@
 
     <!-- Payments Tab -->
     <div id="tab-payments" class="tab-content">
-      <div class="table-wrap">
-        <div class="table-header">
-          <h2>All Payments</h2>
-          <button class="refresh-btn" onclick="loadPayments()">↻ Refresh</button>
+      <div id="bookings-body">Loading bookings...</div>
+        <div class="table-wrap">
+          <div class="table-header">
+            <h2>All Payments</h2>
+            <button class="refresh-btn" onclick="loadPayments()">↻ Refresh</button>
         </div>
         <div id="payments-body"><div class="loading">Loading payments…</div></div>
       </div>
@@ -383,6 +385,49 @@
       el.innerHTML = `<div class="empty">Error: ${e.message}</div>`;
     }
   }
+
+  async function loadBookings() {
+  const el = document.getElementById("bookings-body");
+  el.innerHTML = "Loading...";
+
+  try {
+    const res = await fetch(BASE + "/admin/bookings", {
+      headers: {
+        "x-admin-token": adminToken
+      }
+    });
+
+    const data = await res.json();
+
+    if (!data.items.length) {
+      el.innerHTML = "No bookings found";
+      return;
+    }
+
+    el.innerHTML = `
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Service</th>
+          <th>Pandit</th>
+          <th>Date</th>
+        </tr>
+        ${data.items.map(b => `
+          <tr>
+            <td>${b.name}</td>
+            <td>${b.phone}</td>
+            <td>${b.service}</td>
+            <td>${b.pandit}</td>
+            <td>${b.date}</td>
+          </tr>
+        `).join("")}
+      </table>
+    `;
+  } catch (err) {
+    el.innerHTML = "Error loading bookings";
+  }
+}
 
   function loadAll() {
     loadStats();

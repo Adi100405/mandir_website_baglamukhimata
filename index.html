@@ -1319,16 +1319,39 @@
     showToast('Booking confirmed for ' + name + '! We will call you on ' + phone + '. Jay Mata Di!');
   }
 
-  function submitBooking() {
-    var name = document.getElementById('f-name').value.trim();
-    var phone = document.getElementById('f-phone').value.trim();
-    var service = document.getElementById('f-service').value;
-    var date = document.getElementById('f-date').value;
-    if (!name || !phone) { alert('Please enter your name and mobile number.'); return; }
-    if (!service) { alert('Please select a pooja/hawan service.'); return; }
-    if (!date) { alert('Please select your preferred date.'); return; }
-    showToast('Booking received for ' + service + '! We will confirm on ' + phone + '. Jay Mata Di!');
+  async function submitBooking() {
+
+  var name = document.getElementById('f-name').value.trim();
+  var phone = document.getElementById('f-phone').value.trim();
+  var service = document.getElementById('f-service').value;
+  var pandit = document.getElementById('f-pandit').value;
+  var date = document.getElementById('f-date').value;
+
+  if (!name || !phone || !service || !date) {
+    alert("Please fill all required fields");
+    return;
   }
+
+  // 🔥 SAVE BOOKING
+  await fetch("https://mandir-website-baglamukhimata.onrender.com", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name,
+      phone,
+      service,
+      pandit,
+      date
+    })
+  });
+
+  alert("Booking saved ✅");
+
+  // OPTIONAL payment
+  payNow();
+}
 
   function filterServices(btn, cat) {
     var tabs = document.querySelectorAll('.tab-btn');
