@@ -1333,7 +1333,7 @@
   }
 
   // 🔥 SAVE BOOKING
-  await fetch("https://mandir-website-baglamukhimata.onrender.com", {
+  await fetch("https://mandir-website-baglamukhimata.onrender.com/book", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -1351,6 +1351,11 @@
 
   // OPTIONAL payment
   payNow();
+document.getElementById("f-name").value = "";
+document.getElementById("f-phone").value = "";
+document.getElementById("f-service").value = "";
+document.getElementById("f-pandit").value = "";
+document.getElementById("f-date").value = "";
 }
 
   function filterServices(btn, cat) {
