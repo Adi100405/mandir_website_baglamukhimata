@@ -23,24 +23,59 @@ const razorpay = new Razorpay({
   key_secret: KEY_SECRET,
 });
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.send("Backend is running 🚀");
 });
 
 app.post("/create-order", async (req, res) => {
   try {
-    const { amount } = req.body;
+    const {
+      amount,
+      purpose = "booking",
+      name = "",
+      phone = "",
+      service = "",
+      pandit = "",
+      date = "",
+      location = "",
+      address = "",
+    } = req.body;
 
     if (!amount || Number(amount) <= 0) {
       return res.status(400).json({ error: "Valid amount is required" });
     }
 
+    if (!["booking", "donation"].includes(purpose)) {
+      return res.status(400).json({ error: "Invalid purpose" });
+    }
+
+    if (purpose === "booking" && (!name || !phone || !service || !location)) {
+      return res.status(400).json({ error: "Missing booking details" });
+    }
+
+    if (purpose === "donation" && (!name || !phone)) {
+      return res.status(400).json({ error: "Missing donor details" });
+    }
+
     const order = await razorpay.orders.create({
       amount: Math.round(Number(amount) * 100),
       currency: "INR",
+      notes: {
+        purpose,
+        name,
+        phone,
+        service,
+        pandit,
+        date,
+        location,
+        address,
+      },
     });
 
-    res.json(order);
+    res.json({
+      ...order,
+      key: KEY_ID,
+    });
   } catch (err) {
     console.error("Create order error:", err);
     res.status(500).json({ error: "Order creation failed" });
@@ -52,7 +87,9 @@ app.post("/verify-payment", (req, res) => {
     const { order_id, payment_id, signature } = req.body;
 
     if (!order_id || !payment_id || !signature) {
-      return res.status(400).json({ success: false, error: "Missing payment verification fields" });
+      return res
+        .status(400)
+        .json({ success: false, error: "Missing payment verification fields" });
     }
 
     const body = `${order_id}|${payment_id}`;
@@ -83,103 +120,125 @@ function adminAuth(req, res, next) {
   next();
 }
 
-app.get("/admin/orders", adminAuth, async (req, res) => {
+function latestPayment(payments) {
+  if (!payments?.length) return null;
+  return [...payments].sort((a, b) => (b.created_at || 0) - (a.created_at || 0))[0];
+}
+
+function bookingPaymentStatus(payment) {
+  if (!payment) return "failed";
+  if (payment.status === "captured") return "paid";
+  return "failed";
+}
+
+async function fetchOrderWithPayments(order) {
   try {
-    const count = Number(req.query.count) || 50;
-    const skip = Number(req.query.skip) || 0;
+    const payments = await razorpay.orders.fetchPayments(order.id);
+    return { ...order, payments: payments.items || [] };
+  } catch {
+    return { ...order, payments: [] };
+  }
+}
 
-    const orders = await razorpay.orders.all({ count, skip });
+async function fetchAllRelevantOrders(limit = 100) {
+  const orders = await razorpay.orders.all({ count: limit });
+  return Promise.all((orders.items || []).map(fetchOrderWithPayments));
+}
 
-    const ordersWithPayments = await Promise.all(
-      orders.items.map(async (order) => {
-        try {
-          const payments = await razorpay.orders.fetchPayments(order.id);
-          return { ...order, payments: payments.items };
-        } catch {
-          return { ...order, payments: [] };
-        }
+app.get("/admin/bookings", adminAuth, async (_req, res) => {
+  try {
+    const orders = await fetchAllRelevantOrders(100);
+
+    const items = orders
+      .filter((order) => order.notes?.purpose === "booking")
+      .map((order) => {
+        const payment = latestPayment(order.payments);
+        return {
+          id: order.id,
+          name: order.notes?.name || "—",
+          phone: order.notes?.phone || "—",
+          service: order.notes?.service || "—",
+          pandit: order.notes?.pandit || "—",
+          location: order.notes?.location || "—",
+          amount: order.amount,
+          paymentStatus: bookingPaymentStatus(payment),
+          createdAt: order.created_at,
+        };
       })
-    );
+      .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
-    res.json({ ...orders, items: ordersWithPayments });
+    res.json({ items });
   } catch (err) {
-    console.error("Admin orders error:", err);
-    res.status(500).json({ error: "Failed to fetch orders" });
+    console.error("Admin bookings error:", err);
+    res.status(500).json({ error: "Failed to fetch bookings" });
   }
 });
 
-app.get("/admin/payments", adminAuth, async (req, res) => {
+app.get("/admin/donations", adminAuth, async (_req, res) => {
   try {
-    const count = Number(req.query.count) || 50;
-    const skip = Number(req.query.skip) || 0;
+    const orders = await fetchAllRelevantOrders(100);
 
-    const payments = await razorpay.payments.all({ count, skip });
-    res.json(payments);
+    const items = orders
+      .filter((order) => order.notes?.purpose === "donation")
+      .map((order) => {
+        const payment = latestPayment(order.payments);
+        return {
+          id: order.id,
+          name: order.notes?.name || "—",
+          phone: order.notes?.phone || payment?.contact || "—",
+          amount: order.amount,
+          paymentStatus: payment?.status || "failed",
+          createdAt: order.created_at,
+        };
+      })
+      .filter((item) => item.paymentStatus === "captured")
+      .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+    res.json({ items });
   } catch (err) {
-    console.error("Admin payments error:", err);
-    res.status(500).json({ error: "Failed to fetch payments" });
+    console.error("Admin donations error:", err);
+    res.status(500).json({ error: "Failed to fetch donations" });
   }
 });
 
-app.get("/admin/stats", adminAuth, async (req, res) => {
+app.get("/admin/dashboard-summary", adminAuth, async (_req, res) => {
   try {
-    const [orders, payments] = await Promise.all([
-      razorpay.orders.all({ count: 100 }),
-      razorpay.payments.all({ count: 100 }),
-    ]);
+    const orders = await fetchAllRelevantOrders(100);
 
-    const capturedPayments = payments.items.filter((p) => p.status === "captured");
-    const failedPayments = payments.items.filter((p) => p.status === "failed");
+    const bookings = orders
+      .filter((order) => order.notes?.purpose === "booking")
+      .map((order) => {
+        const payment = latestPayment(order.payments);
+        return bookingPaymentStatus(payment);
+      });
 
-    const totalRevenue = capturedPayments.reduce((sum, p) => sum + p.amount, 0) / 100;
+    const donations = orders
+      .filter((order) => order.notes?.purpose === "donation")
+      .map((order) => {
+        const payment = latestPayment(order.payments);
+        return {
+          amount: order.amount,
+          successful: payment?.status === "captured",
+        };
+      });
+
+    const paidBookings = bookings.filter((s) => s === "paid").length;
+    const failedBookings = bookings.filter((s) => s === "failed").length;
+    const successfulDonations = donations.filter((d) => d.successful);
+    const totalDonationAmount =
+      successfulDonations.reduce((sum, d) => sum + d.amount, 0) / 100;
 
     res.json({
-      totalOrders: orders.count,
-      totalPayments: payments.count,
-      capturedPayments: capturedPayments.length,
-      failedPayments: failedPayments.length,
-      totalRevenue,
+      totalBookings: bookings.length,
+      paidBookings,
+      failedBookings,
+      totalDonations: successfulDonations.length,
+      totalDonationAmount,
     });
   } catch (err) {
-    console.error("Admin stats error:", err);
-    res.status(500).json({ error: "Failed to fetch stats" });
+    console.error("Dashboard summary error:", err);
+    res.status(500).json({ error: "Failed to fetch dashboard summary" });
   }
-});
-
-let bookings = [];
-
-app.post("/book", (req, res) => {
-  try {
-    const { name, phone, service, pandit, date, location, address, price } = req.body;
-
-    if (!name || !phone || !service || !date) {
-      return res.status(400).json({ error: "Missing required booking fields" });
-    }
-
-    const booking = {
-      id: Date.now(),
-      name,
-      phone,
-      service,
-      pandit: pandit || "",
-      date,
-      location: location || "",
-      address: address || "",
-      price: price || "",
-      createdAt: new Date().toISOString(),
-    };
-
-    bookings.push(booking);
-
-    res.json({ success: true, booking });
-  } catch (err) {
-    console.error("Book error:", err);
-    res.status(500).json({ error: "Booking failed" });
-  }
-});
-
-app.get("/admin/bookings", adminAuth, (req, res) => {
-  res.json({ items: bookings });
 });
 
 app.listen(PORT, () => {
