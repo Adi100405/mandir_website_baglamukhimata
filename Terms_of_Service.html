@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service — Bagla Mukhi Mata Mandir</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --saffron: #FF6B00;
+      --deep-saffron: #E05A00;
+      --gold: #D4AF37;
+      --gold-light: #F5D76E;
+      --cream: #FFF8EE;
+      --deep-maroon: #3D0C11;
+      --maroon: #6B1A24;
+      --brown: #8B4513;
+      --dark: #1A0A00;
+      --text: #2C1810;
+      --text-light: #6B4C3B;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'EB Garamond', serif;
+      background:
+        linear-gradient(180deg, rgba(61,12,17,0.96), rgba(26,10,0,0.92)),
+        var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(61,12,17,0.97);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid var(--gold);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-brand {
+      font-family: 'Cinzel Decorative', cursive;
+      color: var(--gold);
+      font-size: 1.05rem;
+      letter-spacing: 1px;
+    }
+
+    .nav-link {
+      color: var(--cream);
+      text-decoration: none;
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      border: 1px solid rgba(212,175,55,0.35);
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      transition: all 0.25s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--gold);
+      border-color: var(--gold);
+      background: rgba(212,175,55,0.08);
+    }
+
+    .page-wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 3rem 1.25rem 4rem;
+    }
+
+    .policy-card {
+      background: linear-gradient(180deg, rgba(255,248,238,0.98), rgba(255,248,238,0.94));
+      border: 2px solid rgba(212,175,55,0.35);
+      border-radius: 22px;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.22);
+      overflow: hidden;
+    }
+
+    .policy-hero {
+      background: linear-gradient(135deg, var(--deep-maroon), var(--maroon));
+      padding: 2.5rem 2rem;
+      border-bottom: 2px solid rgba(212,175,55,0.22);
+      text-align: center;
+    }
+
+    .policy-hero .tag {
+      display: inline-block;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      background: rgba(212,175,55,0.14);
+      border: 1px solid rgba(245,215,110,0.28);
+      color: var(--gold-light);
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    .policy-hero h1 {
+      font-family: 'Cinzel', serif;
+      color: var(--gold-light);
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 0.9rem;
+    }
+
+    .policy-hero p {
+      max-width: 720px;
+      margin: 0 auto;
+      color: rgba(255,248,238,0.82);
+      font-size: 1.08rem;
+      line-height: 1.7;
+    }
+
+    .policy-body {
+      padding: 2rem;
+    }
+
+    .intro-box {
+      background: rgba(212,175,55,0.08);
+      border-left: 4px solid var(--gold);
+      padding: 1rem 1.1rem;
+      border-radius: 10px;
+      margin-bottom: 1.8rem;
+      color: var(--text-light);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .policy-section {
+      padding: 1.35rem 0;
+      border-bottom: 1px solid rgba(107,26,36,0.12);
+    }
+
+    .policy-section:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .policy-section h2 {
+      font-family: 'Cinzel', serif;
+      color: var(--deep-maroon);
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .policy-section p,
+    .policy-section li {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--text-light);
+    }
+
+    .policy-section ul {
+      margin: 0.7rem 0 0 1.4rem;
+    }
+
+    .policy-section li + li {
+      margin-top: 0.35rem;
+    }
+
+    .contact-box {
+      margin-top: 0.9rem;
+      padding: 1rem 1.1rem;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,107,0,0.08), rgba(212,175,55,0.12));
+      border: 1px solid rgba(212,175,55,0.28);
+    }
+
+    .contact-box p {
+      margin-bottom: 0.45rem;
+    }
+
+    .contact-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .contact-box a {
+      color: var(--deep-maroon);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .contact-box a:hover {
+      text-decoration: underline;
+    }
+
+    .last-updated {
+      margin-top: 1.75rem;
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      color: var(--maroon);
+      font-size: 0.92rem;
+      letter-spacing: 0.5px;
+    }
+
+    footer {
+      background: var(--dark);
+      padding: 1.6rem 1rem;
+      border-top: 2px solid var(--gold);
+      text-align: center;
+      color: rgba(255,248,238,0.45);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 0 1rem;
+      }
+
+      .nav-brand {
+        font-size: 0.9rem;
+        max-width: 58%;
+        line-height: 1.25;
+      }
+
+      .nav-link {
+        font-size: 0.75rem;
+        padding: 0.45rem 0.8rem;
+      }
+
+      .page-wrap {
+        padding: 1.5rem 0.9rem 2.5rem;
+      }
+
+      .policy-hero,
+      .policy-body {
+        padding: 1.35rem;
+      }
+
+      .policy-section h2 {
+        font-size: 1.05rem;
+      }
+
+      .policy-section p,
+      .policy-section li,
+      .intro-box {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-brand">🛕 Bagla Mukhi Mata Mandir</div>
+    <a class="nav-link" href="index.html">← Back to Home</a>
+  </nav>
+
+  <main class="page-wrap">
+    <div class="policy-card">
+      <section class="policy-hero">
+        <div class="tag">Legal</div>
+        <h1>Terms of Service</h1>
+        <p>Please read these terms carefully before using the website and services of Bagla Mukhi Mata Mandir.</p>
+      </section>
+
+      <section class="policy-body">
+        <div class="intro-box">
+          By using this website, making donations, or booking temple-related services, you agree to follow these terms. These conditions help us maintain a respectful, secure, and transparent experience for all devotees and visitors.
+        </div>
+
+        <div class="policy-section">
+          <h2>1. Acceptance of Terms</h2>
+          <p>By accessing and using this website and the services of Bagla Mukhi Mata Mandir, you accept and agree to be bound by these Terms of Service. If you do not agree with any part of these terms, please do not use our services.</p>
+        </div>
+
+        <div class="policy-section">
+          <h2>2. Use of Website</h2>
+          <p>You agree to use this website only for lawful purposes and in accordance with these terms. You must not:</p>
+          <ul>
+            <li>Use the website in any way that violates applicable laws or regulations</li>
+            <li>Attempt to gain unauthorized access to the website or related systems</li>
+            <li>Transmit harmful, malicious, or disruptive code</li>
+            <li>Engage in conduct that restricts or inhibits others from using the website</li>
+            <li>Misrepresent your identity or affiliation</li>
+          </ul>
+        </div>
+
+        <div class="policy-section">
+          <h2>3. Donations and Contributions</h2>
+          <p>All donations made to Bagla Mukhi Mata Mandir are voluntary and non-refundable. Donations are used for temple maintenance, religious activities, and community service, and are subject to applicable tax laws. A donation receipt will be provided upon request.</p>
+        </div>
+
+        <div class="policy-section">
+          <h2>4. Temple Services</h2>
+          <p>Booking of special pujas, ceremonies, or services is subject to availability and temple schedules. The temple reserves the right to:</p>
+          <ul>
+            <li>Modify service schedules due to religious observances or special circumstances</li>
+            <li>Cancel or reschedule services with prior notice where possible</li>
+            <li>Set or revise service fees and offerings</li>
+          </ul>
+        </div>
+
+        <div class="policy-section">
+          <h2>5. Intellectual Property</h2>
+          <p>All content on this website, including text, images, graphics, logos, and software, is the property of Bagla Mukhi Mata Mandir and is protected under applicable copyright and intellectual property laws. Unauthorized reproduction or distribution is prohibited.</p>
+        </div>
+
+        <div class="policy-section">
+          <h2>6. Visitor Conduct</h2>
+          <p>Visitors to the temple premises are expected to maintain discipline, respect the sanctity of the temple, and follow all rules and guidelines.</p>
+          <ul>
+            <li>Dress modestly and appropriately</li>
+            <li>Respect fellow devotees and temple staff</li>
+            <li>Follow photography restrictions in sacred areas</li>
+          </ul>
+        </div>
+
+        <div class="policy-section">
+          <h2>7. Disclaimer of Warranties</h2>
+          <p>This website and all services are provided on an “as is” basis. Bagla Mukhi Mata Mandir makes no warranties regarding accuracy, reliability, or uninterrupted availability of the website.</p>
+        </div>
+
+        <div class="policy-section">
+          <h2>8. Limitation of Liability</h2>
+          <p>Bagla Mukhi Mata Mandir shall not be liable for any direct, indirect, incidental, consequential, or punitive damages arising from the use of this website or temple services.</p>
+        </div>
+
+        <div class="policy-section">
+          <h2>9. External Links</h2>
+          <p>This website may contain links to third-party websites. Bagla Mukhi Mata Mandir is not responsible for the content, privacy policies, or practices of external sites.</p>
+        </div>
+
+        <div class="policy-section">
+          <h2>10. Changes to Terms</h2>
+          <p>We reserve the right to modify these Terms of Service at any time. Changes will be effective immediately upon posting. Continued use of the website constitutes acceptance of the revised terms.</p>
+        </div>
+
+        <div class="policy-section">
+          <h2>11. Governing Law</h2>
+          <p>These terms shall be governed by and interpreted in accordance with the laws of India, without regard to conflict of law principles.</p>
+        </div>
+
+        <div class="policy-section">
+          <h2>12. Contact Information</h2>
+          <p>If you have any questions regarding these Terms of Service, please contact us:</p>
+          <div class="contact-box">
+            <p><strong>Email:</strong> <a href="mailto:ex@baglamukimatagr.in">ex@baglamukimatagr.in</a></p>
+            <p><strong>Phone:</strong> <a href="tel:+919990225185">+91 99902 25185</a></p>
+            <p><strong>Address:</strong><br>
+              Shri Shakti Mandir, Maa Pitambara Baglamukhi Pith, Side 4, Greater Noida, Gautam Buddha Nagar, Uttar Pradesh - 201310
+            </p>
+          </div>
+        </div>
+
+        <div class="last-updated">Last updated: January 2026</div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    © 2026 Bagla Mukhi Mata Mandir. All rights reserved.
+  </footer>
+</body>
+</html>
