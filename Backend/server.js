@@ -40,9 +40,7 @@ async function readStore() {
   await ensureStorage();
   const raw = await fs.readFile(DATA_FILE, "utf8");
   const parsed = JSON.parse(raw || '{"items":[]}');
-  if (!parsed.items || !Array.isArray(parsed.items)) {
-    return { items: [] };
-  }
+  if (!Array.isArray(parsed.items)) return { items: [] };
   return parsed;
 }
 
@@ -113,15 +111,21 @@ function extractPaymentUrl(payload) {
   return (
     payload?.result?.payment_url ||
     payload?.result?.payment_link ||
+    payload?.result?.url ||
     payload?.payment_url ||
     payload?.payment_link ||
     payload?.url ||
+    payload?.redirect_url ||
+    payload?.redirectUrl ||
+    payload?.data?.payment_url ||
+    payload?.data?.payment_link ||
+    payload?.data?.url ||
     ""
   );
 }
 
 function extractMessage(payload) {
-  return payload?.message || payload?.msg || payload?.error || "Request failed";
+  return payload?.message || payload?.msg || payload?.error || payload?.raw || "Request failed";
 }
 
 async function updateOrder(orderId, updater) {
@@ -146,21 +150,21 @@ async function createOrderInStore(data) {
 async function imbCreateOrder(payload) {
   const body = new URLSearchParams(payload).toString();
 
-  console.log("IMB create-order request payload:", payload);
   console.log("IMB create-order request URL:", `${IMB_API_URL}/create-order`);
+  console.log("IMB create-order request payload:", payload);
 
   const response = await fetch(`${IMB_API_URL}/create-order`, {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      "Accept": "application/json",
+      "Accept": "application/json, text/plain, */*",
     },
     body,
   });
 
   const text = await response.text();
-  console.log("IMB raw response status:", response.status);
-  console.log("IMB raw response text:", text);
+  console.log("IMB create-order raw status:", response.status);
+  console.log("IMB create-order raw response:", text);
 
   let data;
   try {
@@ -186,12 +190,15 @@ async function imbCheckStatus(orderId) {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      "Accept": "application/json",
+      Accept: "application/json, text/plain, */*",
     },
     body,
   });
 
   const text = await response.text();
+  console.log("IMB check-status raw status:", response.status);
+  console.log("IMB check-status raw response:", text);
+
   let data;
   try {
     data = JSON.parse(text);
@@ -200,7 +207,7 @@ async function imbCheckStatus(orderId) {
   }
 
   if (!response.ok) {
-    throw new Error(extractMessage(data));
+    throw new Error(`IMB HTTP ${response.status}: ${text}`);
   }
 
   return data;
@@ -259,7 +266,8 @@ app.post("/create-order", async (req, res) => {
 
     const orderId = generateOrderId(purpose === "booking" ? "BKM" : "DON");
     const finalRedirectUrl =
-      safeText(redirect_url) || `${FRONTEND_URL}/booking-success.html?order_id=${encodeURIComponent(orderId)}&purpose=${encodeURIComponent(purpose)}`;
+      safeText(redirect_url) ||
+      `${FRONTEND_URL}/booking-success.html?order_id=${encodeURIComponent(orderId)}&purpose=${encodeURIComponent(purpose)}`;
 
     const localOrder = {
       orderId,
@@ -296,11 +304,17 @@ app.post("/create-order", async (req, res) => {
       remark2: `${purpose}|${localOrder.service}|${localOrder.pandit}|${localOrder.date}|${localOrder.time}`,
     });
 
-    const paymentUrl = extractPaymentUrl(imbResponse);
+    console.log("IMB create-order full parsed response:", JSON.stringify(imbResponse, null, 2));
 
+    const paymentUrl = extractPaymentUrl(imbResponse);
+    console.log("Extracted payment URL:", paymentUrl);
+
+    // Sometimes IMB may return success=false or a different shape
     if (!paymentUrl) {
-      console.error("IMB create-order response missing payment URL:", imbResponse);
-      return res.status(500).json({ error: "Payment URL not received from gateway" });
+      return res.status(500).json({
+        error: "Payment URL not received from gateway",
+        gatewayResponse: imbResponse,
+      });
     }
 
     await updateOrder(orderId, (order) => ({
