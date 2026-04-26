@@ -3,24 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel</title>
+  <title>Admin Panel — Booking Dashboard</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: "Segoe UI", sans-serif;
       background: #0f172a;
       color: #e2e8f0;
       min-height: 100vh;
     }
-
     #login-screen {
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
     }
-
     .login-box {
       background: #1e293b;
       border: 1px solid #334155;
@@ -29,336 +26,162 @@
       width: 360px;
       text-align: center;
     }
-
-    .login-box h1 {
-      font-size: 24px;
-      margin-bottom: 8px;
-      color: #f8fafc;
-    }
-
-    .login-box p {
-      color: #94a3b8;
-      font-size: 14px;
-      margin-bottom: 28px;
-    }
-
+    .login-box h1 { font-size: 24px; margin-bottom: 8px; color: #f8fafc; }
+    .login-box p { color: #94a3b8; font-size: 14px; margin-bottom: 28px; }
     .login-box input {
       width: 100%;
       padding: 12px 16px;
       background: #0f172a;
       border: 1px solid #334155;
-      border-radius: 8px;
+      border-radius: 12px;
       color: #f8fafc;
-      font-size: 15px;
       margin-bottom: 16px;
     }
-
-    .login-box input:focus {
-      outline: none;
-      border-color: #6366f1;
-    }
-
-    .btn-primary {
+    .login-box button {
       width: 100%;
-      padding: 12px;
-      background: #6366f1;
-      color: white;
+      padding: 12px 16px;
       border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .btn-primary:hover {
-      background: #4f46e5;
-    }
-
-    #login-error {
-      color: #f87171;
-      font-size: 13px;
-      margin-top: 10px;
-    }
-
-    #admin-panel {
-      display: none;
-    }
-
-    header {
-      background: #1e293b;
-      border-bottom: 1px solid #334155;
-      padding: 16px 32px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    header h1 {
-      font-size: 20px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #f97316, #facc15);
+      color: #111827;
       font-weight: 700;
-      color: #f8fafc;
-    }
-
-    .logout-btn {
-      background: #334155;
-      border: none;
-      color: #cbd5e1;
-      padding: 8px 16px;
-      border-radius: 8px;
       cursor: pointer;
-      font-size: 13px;
     }
+    .error { color: #fca5a5; font-size: 13px; margin-top: 12px; min-height: 18px; }
 
-    .logout-btn:hover {
-      background: #475569;
+    #admin-panel { display: none; padding: 24px; max-width: 1400px; margin: 0 auto; }
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 24px; gap: 12px; flex-wrap: wrap;
     }
-
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 32px;
+    .topbar h1 { font-size: 28px; color: #f8fafc; }
+    .actions { display: flex; gap: 10px; }
+    .actions button {
+      padding: 10px 14px;
+      border: 1px solid #334155;
+      background: #1e293b;
+      color: #f8fafc;
+      border-radius: 12px;
+      cursor: pointer;
     }
-
-    .stats-grid {
+    .stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 16px;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
     }
-
     .stat-card {
       background: #1e293b;
       border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: 16px;
+      padding: 18px;
     }
+    .stat-label { color: #94a3b8; font-size: 13px; margin-bottom: 8px; }
+    .stat-value { font-size: 28px; font-weight: 700; color: #f8fafc; }
 
-    .stat-card .label {
-      font-size: 12px;
-      color: #64748b;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 8px;
-    }
-
-    .stat-card .value {
-      font-size: 28px;
-      font-weight: 700;
-      color: #f8fafc;
-    }
-
-    .stat-card .value.green {
-      color: #4ade80;
-    }
-
-    .stat-card .value.red {
-      color: #f87171;
-    }
-
-    .stat-card .value.blue {
-      color: #60a5fa;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 28px;
-      background: #1e293b;
-      border-radius: 10px;
-      padding: 4px;
-      width: fit-content;
-    }
-
-    .tab {
-      padding: 8px 20px;
-      border-radius: 8px;
-      border: none;
-      background: transparent;
-      color: #94a3b8;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-
-    .tab.active {
-      background: #6366f1;
-      color: white;
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    .table-wrap {
+    .panel {
       background: #1e293b;
       border: 1px solid #334155;
-      border-radius: 12px;
-      overflow: hidden;
+      border-radius: 16px;
+      padding: 18px;
     }
+    .panel h2 { margin-bottom: 16px; font-size: 20px; color: #f8fafc; }
+    .loading, .empty { color: #94a3b8; padding: 12px 0; }
 
-    .table-header {
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #334155;
-    }
-
-    .table-header h2 {
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .refresh-btn {
-      background: #334155;
-      border: none;
-      color: #cbd5e1;
-      padding: 7px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .refresh-btn:hover {
-      background: #475569;
-    }
-
+    .table-wrap { overflow-x: auto; }
     table {
       width: 100%;
       border-collapse: collapse;
+      min-width: 1100px;
     }
-
-    th {
-      background: #0f172a;
-      padding: 12px 16px;
+    th, td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #334155;
       text-align: left;
-      font-size: 12px;
-      font-weight: 600;
-      color: #64748b;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    td {
-      padding: 13px 16px;
+      vertical-align: top;
       font-size: 14px;
-      border-top: 1px solid #1e293b;
-      background: #0f172a;
     }
-
-    tr:hover td {
-      background: #1e293b;
-    }
-
+    th { color: #cbd5e1; font-weight: 600; }
+    td { color: #e2e8f0; }
+    .muted { color: #94a3b8; }
     .badge {
       display: inline-block;
-      padding: 3px 10px;
-      border-radius: 20px;
+      padding: 6px 10px;
+      border-radius: 999px;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: capitalize;
+      white-space: nowrap;
     }
-
-    .badge.paid {
-      background: #14532d;
-      color: #4ade80;
+    .cash.pending { background: #422006; color: #fdba74; }
+    .cash.received { background: #052e16; color: #86efac; }
+    .submitted { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; }
+    .completed { background: #0c4a6e; color: #7dd3fc; }
+    .row-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
     }
-
-    .badge.failed {
-      background: #450a0a;
-      color: #f87171;
+    .row-actions button {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #f8fafc;
+      cursor: pointer;
+      font-size: 12px;
     }
-
-    .loading {
-      text-align: center;
-      padding: 48px;
-      color: #64748b;
-    }
-
-    .empty {
-      text-align: center;
-      padding: 48px;
-      color: #64748b;
-    }
-
-    .amount {
-      font-weight: 600;
-      color: #4ade80;
-    }
-
-    @media (max-width: 900px) {
-      .container {
-        padding: 20px;
-      }
-
-      .table-wrap {
-        overflow-x: auto;
-      }
-
-      table {
-        min-width: 900px;
-      }
+    @media (max-width: 980px) {
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
   </style>
 </head>
 <body>
-  <div id="login-screen">
+  <section id="login-screen">
     <div class="login-box">
-      <h1>🔐 Admin Panel</h1>
-      <p>Enter your admin password to continue</p>
-      <input type="password" id="password-input" placeholder="Admin password" />
-      <button class="btn-primary" onclick="login()">Login</button>
-      <p id="login-error"></p>
+      <h1>Temple Admin Panel</h1>
+      <p>Enter the admin password to view bookings.</p>
+      <input id="password-input" type="password" placeholder="Enter admin password" />
+      <button onclick="login()">Login</button>
+      <div class="error" id="login-error"></div>
     </div>
-  </div>
+  </section>
 
-  <div id="admin-panel">
-    <header>
-      <h1>📊 Admin Dashboard</h1>
-      <button class="logout-btn" onclick="logout()">Logout</button>
-    </header>
-
-    <div class="container">
-      <div class="stats-grid">
-        <div class="stat-card"><div class="label">Total Bookings</div><div class="value blue" id="stat-total-bookings">—</div></div>
-        <div class="stat-card"><div class="label">Paid Bookings</div><div class="value green" id="stat-paid-bookings">—</div></div>
-        <div class="stat-card"><div class="label">Failed Bookings</div><div class="value red" id="stat-failed-bookings">—</div></div>
-        <div class="stat-card"><div class="label">Total Donations</div><div class="value blue" id="stat-total-donations">—</div></div>
-        <div class="stat-card"><div class="label">Donation Amount</div><div class="value green" id="stat-donation-amount">—</div></div>
-      </div>
-
-      <div class="tabs">
-        <button class="tab active" onclick="switchTab(event, 'bookings')">Bookings</button>
-        <button class="tab" onclick="switchTab(event, 'donations')">Donations</button>
-      </div>
-
-      <div id="tab-bookings" class="tab-content active">
-        <div class="table-wrap">
-          <div class="table-header">
-            <h2>All Bookings</h2>
-            <button class="refresh-btn" onclick="loadBookings()">↻ Refresh</button>
-          </div>
-          <div id="bookings-body"><div class="loading">Loading bookings…</div></div>
-        </div>
-      </div>
-
-      <div id="tab-donations" class="tab-content">
-        <div class="table-wrap">
-          <div class="table-header">
-            <h2>Successful Donations</h2>
-            <button class="refresh-btn" onclick="loadDonations()">↻ Refresh</button>
-          </div>
-          <div id="donations-body"><div class="loading">Loading donations…</div></div>
-        </div>
+  <main id="admin-panel">
+    <div class="topbar">
+      <h1>Booking Dashboard</h1>
+      <div class="actions">
+        <button onclick="loadAll()">Refresh</button>
+        <button onclick="logout()">Logout</button>
       </div>
     </div>
-  </div>
+
+    <section class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Bookings</div>
+        <div class="stat-value" id="stat-total-bookings">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Cash Pending</div>
+        <div class="stat-value" id="stat-cash-pending">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Cash Received</div>
+        <div class="stat-value" id="stat-cash-received">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Completed Services</div>
+        <div class="stat-value" id="stat-completed-bookings">0</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Bookings</h2>
+      <div id="bookings-body" class="table-wrap">
+        <div class="loading">Loading…</div>
+      </div>
+    </section>
+  </main>
 
   <script>
     const BASE = "https://mandir-website-baglamukhimata.onrender.com";
@@ -394,16 +217,14 @@
       document.getElementById("login-error").textContent = "";
     }
 
-    function switchTab(e, tab) {
-      document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
-      document.querySelectorAll(".tab-content").forEach((c) => c.classList.remove("active"));
-      e.target.classList.add("active");
-      document.getElementById(`tab-${tab}`).classList.add("active");
-    }
-
-    async function apiFetch(path) {
+    async function apiFetch(path, options = {}) {
       const res = await fetch(`${BASE}${path}`, {
-        headers: { "x-admin-token": adminToken }
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-token": adminToken,
+          ...(options.headers || {})
+        }
       });
 
       if (!res.ok) {
@@ -414,28 +235,38 @@
     }
 
     function fmtAmount(paise) {
-      return "₹" + (Number(paise) / 100).toLocaleString("en-IN", {
-        minimumFractionDigits: 2
-      });
+      const rupees = Number(paise || 0) / 100;
+      return rupees > 0
+        ? "₹" + rupees.toLocaleString("en-IN", { minimumFractionDigits: 2 })
+        : "Cash later";
     }
 
-    function badge(status) {
+    function cashBadge(status) {
       const normalized = (status || "").toLowerCase();
-      return `<span class="badge ${normalized}">${status || "—"}</span>`;
+      const cls = normalized === "cash received" ? "cash received" : "cash pending";
+      return `<span class="badge ${cls}">${status || "cash pending"}</span>`;
+    }
+
+    function bookingBadge(status) {
+      const normalized = (status || "").toLowerCase();
+      const cls = normalized === "completed" ? "completed" : "submitted";
+      return `<span class="badge ${cls}">${status || "submitted"}</span>`;
     }
 
     async function loadSummary() {
-      try {
-        const s = await apiFetch("/admin/dashboard-summary");
-        document.getElementById("stat-total-bookings").textContent = s.totalBookings;
-        document.getElementById("stat-paid-bookings").textContent = s.paidBookings;
-        document.getElementById("stat-failed-bookings").textContent = s.failedBookings;
-        document.getElementById("stat-total-donations").textContent = s.totalDonations;
-        document.getElementById("stat-donation-amount").textContent =
-          "₹" + Number(s.totalDonationAmount).toLocaleString("en-IN", { minimumFractionDigits: 2 });
-      } catch (e) {
-        console.error(e);
-      }
+      const s = await apiFetch("/admin/dashboard-summary");
+      document.getElementById("stat-total-bookings").textContent = s.totalBookings || 0;
+      document.getElementById("stat-cash-pending").textContent = s.cashPendingBookings || 0;
+      document.getElementById("stat-cash-received").textContent = s.cashReceivedBookings || 0;
+      document.getElementById("stat-completed-bookings").textContent = s.completedBookings || 0;
+    }
+
+    async function updateBooking(bookingId, updates) {
+      await apiFetch(`/admin/bookings/${bookingId}/update`, {
+        method: "POST",
+        body: JSON.stringify(updates)
+      });
+      await loadAll();
     }
 
     async function loadBookings() {
@@ -454,25 +285,41 @@
           <table>
             <thead>
               <tr>
+                <th>Booking ID</th>
                 <th>Name</th>
                 <th>Phone</th>
                 <th>Service</th>
                 <th>Pandit</th>
+                <th>Date</th>
+                <th>Time</th>
                 <th>Location</th>
-                <th>Amount</th>
-                <th>Payment Status</th>
+                <th>Service Price</th>
+                <th>Cash Status</th>
+                <th>Service Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               ${data.items.map((b) => `
                 <tr>
-                  <td>${b.name}</td>
+                  <td><strong>${b.bookingId || b.id}</strong></td>
+                  <td>${b.name}<div class="muted">${b.email && b.email !== "—" ? b.email : ""}</div></td>
                   <td>${b.phone}</td>
                   <td>${b.service}</td>
-                  <td>${b.pandit}</td>
-                  <td>${b.location}</td>
-                  <td class="amount">${fmtAmount(b.amount)}</td>
-                  <td>${badge(b.paymentStatus)}</td>
+                  <td>${b.pandit || "—"}</td>
+                  <td>${b.date || "—"}</td>
+                  <td>${b.time || "—"}</td>
+                  <td>${b.location}<div class="muted">${b.address && b.address !== "—" ? b.address : ""}</div></td>
+                  <td>${fmtAmount(b.amount)}</td>
+                  <td>${cashBadge(b.paymentStatus)}</td>
+                  <td>${bookingBadge(b.bookingStatus)}</td>
+                  <td>
+                    <div class="row-actions">
+                      <button onclick="updateBooking('${b.bookingId || b.id}', { paymentStatus: 'cash received' })">Mark Cash Received</button>
+                      <button onclick="updateBooking('${b.bookingId || b.id}', { bookingStatus: 'completed' })">Mark Completed</button>
+                      <button onclick="updateBooking('${b.bookingId || b.id}', { paymentStatus: 'cash pending', bookingStatus: 'submitted' })">Reset</button>
+                    </div>
+                  </td>
                 </tr>
               `).join("")}
             </tbody>
@@ -483,47 +330,13 @@
       }
     }
 
-    async function loadDonations() {
-      const el = document.getElementById("donations-body");
-      el.innerHTML = '<div class="loading">Loading…</div>';
-
+    async function loadAll() {
       try {
-        const data = await apiFetch("/admin/donations");
-
-        if (!data.items.length) {
-          el.innerHTML = '<div class="empty">No donations found.</div>';
-          return;
-        }
-
-        el.innerHTML = `
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${data.items.map((d) => `
-                <tr>
-                  <td>${d.name}</td>
-                  <td>${d.phone}</td>
-                  <td class="amount">${fmtAmount(d.amount)}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-        `;
+        await loadSummary();
+        await loadBookings();
       } catch (e) {
-        el.innerHTML = `<div class="empty">Error: ${e.message}</div>`;
+        console.error(e);
       }
-    }
-
-    function loadAll() {
-      loadSummary();
-      loadBookings();
-      loadDonations();
     }
   </script>
 </body>

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Booking Submitted — Shri Baglamukhi Mata Mandir</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --saffron: #FF6B00;
+      --gold: #D4AF37;
+      --gold-light: #F5D76E;
+      --cream: #FFF8EE;
+      --deep-maroon: #3D0C11;
+      --maroon: #6B1A24;
+      --dark: #1A0A00;
+      --text: #2C1810;
+      --text-light: #6B4C3B;
+      --success: #16794a;
+      --success-soft: #eaf8ef;
+      --border: rgba(212, 175, 55, 0.28);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: 'EB Garamond', serif;
+      color: var(--text);
+      background: linear-gradient(180deg, rgba(61,12,17,0.92), rgba(26,10,0,0.90)), var(--cream);
+    }
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(61,12,17,0.97);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid var(--gold);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 68px;
+    }
+    .nav-brand {
+      font-family: 'Cinzel Decorative', cursive;
+      color: var(--gold);
+      font-size: 1rem;
+      letter-spacing: 1px;
+    }
+    .nav-link {
+      color: var(--cream);
+      text-decoration: none;
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      border: 1px solid rgba(212,175,55,0.35);
+      padding: 0.52rem 1rem;
+      border-radius: 999px;
+    }
+    .page-wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 2rem 1rem 4rem;
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(255,248,238,0.98), rgba(255,248,238,0.94));
+      border: 2px solid rgba(212,175,55,0.32);
+      border-radius: 24px;
+      box-shadow: 0 20px 70px rgba(0,0,0,0.26);
+      overflow: hidden;
+    }
+    .hero {
+      background: linear-gradient(135deg, var(--deep-maroon), var(--maroon));
+      padding: 2.6rem 1.5rem 2.2rem;
+      text-align: center;
+    }
+    .status-pill {
+      display: inline-flex;
+      padding: 0.55rem 1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(245,215,110,0.28);
+      background: rgba(22,121,74,0.16);
+      color: #d8ffe7;
+      font-family: 'Cinzel', serif;
+      font-size: 0.82rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-family: 'Cinzel', serif;
+      color: var(--gold-light);
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 0.8rem;
+    }
+    .hero p {
+      max-width: 760px;
+      margin: 0 auto;
+      color: rgba(255,248,238,0.84);
+      line-height: 1.7;
+      font-size: 1.07rem;
+    }
+    .content { padding: 2rem; }
+    .top-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 1.25rem;
+      margin-bottom: 1.35rem;
+    }
+    .panel {
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.25rem;
+    }
+    .panel-title {
+      font-family: 'Cinzel', serif;
+      color: var(--deep-maroon);
+      font-size: 1.08rem;
+      margin-bottom: 1rem;
+    }
+    .summary-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.85rem 1rem;
+    }
+    .summary-item {
+      background: rgba(212,175,55,0.08);
+      border-radius: 14px;
+      padding: 0.9rem 1rem;
+      border: 1px solid rgba(212,175,55,0.16);
+    }
+    .summary-label {
+      display: block;
+      color: var(--text-light);
+      font-size: 0.94rem;
+      margin-bottom: 0.22rem;
+    }
+    .summary-value {
+      color: var(--text);
+      font-size: 1.08rem;
+      font-weight: 700;
+      word-break: break-word;
+    }
+    .receipt-box {
+      background: linear-gradient(135deg, rgba(22,121,74,0.08), rgba(212,175,55,0.12));
+      border: 1px solid rgba(22,121,74,0.18);
+    }
+    .receipt-id {
+      font-family: 'Cinzel', serif;
+      color: var(--success);
+      font-size: 1.15rem;
+      margin-bottom: 0.45rem;
+      word-break: break-word;
+    }
+    .receipt-note {
+      color: var(--text-light);
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+    .action-row {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-top: 1.2rem;
+    }
+    .btn {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      text-decoration: none;
+      padding: 0.85rem 1.25rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.84rem;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--saffron), var(--gold));
+      color: var(--dark);
+      font-weight: 700;
+    }
+    .btn-secondary {
+      background: rgba(61,12,17,0.94);
+      color: var(--cream);
+      border: 1px solid rgba(212,175,55,0.28);
+    }
+    .info-strip {
+      margin: 1.2rem 0 1.1rem;
+      background: rgba(212,175,55,0.08);
+      border-left: 4px solid var(--gold);
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      color: var(--text-light);
+      line-height: 1.7;
+    }
+    .receipt-paper {
+      background: #fffdf8;
+      border: 1px dashed rgba(107,26,36,0.28);
+      border-radius: 20px;
+      padding: 1.35rem;
+      margin-top: 1.2rem;
+    }
+    .paper-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(107,26,36,0.14);
+      margin-bottom: 1rem;
+    }
+    .paper-title h2 {
+      font-family: 'Cinzel', serif;
+      color: var(--deep-maroon);
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+    .paper-title p, .paper-meta {
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+    .receipt-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.45rem;
+    }
+    .receipt-table th, .receipt-table td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.85rem 0.4rem;
+      border-bottom: 1px solid rgba(107,26,36,0.10);
+      font-size: 1rem;
+    }
+    .receipt-table th {
+      width: 32%;
+      color: var(--text-light);
+      font-weight: 600;
+    }
+    .receipt-table td {
+      color: var(--text);
+      font-weight: 700;
+    }
+    .paid-badge {
+      display: inline-block;
+      background: #fff5d6;
+      color: #9a6700;
+      border: 1px solid rgba(154,103,0,0.18);
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+    .footer-note {
+      margin-top: 1rem;
+      color: var(--text-light);
+      line-height: 1.7;
+      font-size: 0.98rem;
+    }
+    .empty-state {
+      display: none;
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-light);
+    }
+    .empty-state h3 {
+      font-family: 'Cinzel', serif;
+      color: var(--deep-maroon);
+      margin-bottom: 0.5rem;
+    }
+    footer {
+      margin-top: 1.4rem;
+      text-align: center;
+      color: rgba(255,248,238,0.55);
+      font-size: 0.92rem;
+      padding: 0.4rem 0;
+    }
+    @media print {
+      nav, .action-row, footer, .info-strip { display: none !important; }
+      body { background: #fff; }
+      .page-wrap { max-width: 100%; padding: 0; }
+      .card, .receipt-paper { box-shadow: none; border: none; }
+      .hero { background: #fff !important; border-bottom: 1px solid #ccc; }
+      .hero h1, .paper-title h2 { color: #000 !important; }
+      .hero p, .paper-title p, .paper-meta, .receipt-table th, .receipt-table td { color: #222 !important; }
+    }
+    @media (max-width: 860px) {
+      .top-grid { grid-template-columns: 1fr; }
+      .summary-list { grid-template-columns: 1fr; }
+      .paper-header { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-brand">🛕 Shri Baglamukhi Mata Mandir</div>
+    <a class="nav-link" href="index.html">← Back to Home</a>
+  </nav>
+
+  <main class="page-wrap">
+    <div class="card">
+      <section class="hero">
+        <div class="status-pill">✅ Booking Submitted</div>
+        <h1>Your Booking Request Has Been Received</h1>
+        <p>Please keep this receipt safe. The temple team will contact you if any clarification is needed. Service charges will be collected in cash after the service.</p>
+      </section>
+
+      <section class="content" id="content-area">
+        <div class="top-grid">
+          <div class="panel">
+            <div class="panel-title">Booking Summary</div>
+            <div class="summary-list">
+              <div class="summary-item"><span class="summary-label">Booking ID</span><span class="summary-value" id="sum-id">—</span></div>
+              <div class="summary-item"><span class="summary-label">Devotee Name</span><span class="summary-value" id="sum-name">—</span></div>
+              <div class="summary-item"><span class="summary-label">Phone Number</span><span class="summary-value" id="sum-phone">—</span></div>
+              <div class="summary-item"><span class="summary-label">Service</span><span class="summary-value" id="sum-service">—</span></div>
+              <div class="summary-item"><span class="summary-label">Pandit</span><span class="summary-value" id="sum-pandit">—</span></div>
+              <div class="summary-item"><span class="summary-label">Booking Date</span><span class="summary-value" id="sum-date">—</span></div>
+              <div class="summary-item"><span class="summary-label">Preferred Time</span><span class="summary-value" id="sum-time">—</span></div>
+              <div class="summary-item"><span class="summary-label">Location</span><span class="summary-value" id="sum-location">—</span></div>
+              <div class="summary-item"><span class="summary-label">Service Price</span><span class="summary-value" id="sum-amount">—</span></div>
+            </div>
+          </div>
+
+          <div class="panel receipt-box">
+            <div class="panel-title">Receipt Details</div>
+            <div class="receipt-id" id="receipt-booking-id">Booking ID: —</div>
+            <p class="receipt-note">
+              This receipt confirms that your booking request was submitted successfully.
+              Payment will be collected in cash after the service.
+            </p>
+            <div class="action-row">
+              <button class="btn btn-primary" type="button" onclick="window.print()">🖨 Print / Save PDF</button>
+              <a class="btn btn-secondary" href="index.html">🏠 Back to Home</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-strip">
+          <strong>Note:</strong> Please keep this receipt for reference. Payment status for this booking is <strong>Cash Pending</strong>.
+        </div>
+
+        <div class="receipt-paper">
+          <div class="paper-header">
+            <div class="paper-title">
+              <h2>Shri Baglamukhi Mata Mandir</h2>
+              <p>Maa Pitambara Baglamukhi Pith, Greater Noida</p>
+            </div>
+            <div class="paper-meta">
+              <div><strong>Generated:</strong> <span id="meta-generated">—</span></div>
+              <div><strong>Booking ID:</strong> <span id="meta-booking-id">—</span></div>
+              <div><strong>Status:</strong> <span class="paid-badge">Cash Pending</span></div>
+            </div>
+          </div>
+
+          <table class="receipt-table">
+            <tr><th>Devotee Name</th><td id="r-name">—</td></tr>
+            <tr><th>Phone Number</th><td id="r-phone">—</td></tr>
+            <tr><th>Email</th><td id="r-email">—</td></tr>
+            <tr><th>Service / Ritual</th><td id="r-service">—</td></tr>
+            <tr><th>Pandit</th><td id="r-pandit">—</td></tr>
+            <tr><th>Booking Date</th><td id="r-date">—</td></tr>
+            <tr><th>Preferred Time</th><td id="r-time">—</td></tr>
+            <tr><th>Location</th><td id="r-location">—</td></tr>
+            <tr><th>Address</th><td id="r-address">—</td></tr>
+            <tr><th>Service Charge</th><td id="r-amount">—</td></tr>
+            <tr><th>Temple Note</th><td id="r-note">Payment will be collected in cash after the service.</td></tr>
+          </table>
+
+          <p class="footer-note">This receipt is system-generated after successful booking submission. Please present it whenever you contact the temple about this booking.</p>
+        </div>
+
+        <div class="empty-state" id="empty-state">
+          <h3>No booking receipt data found</h3>
+          <p>Open this page only after submitting a booking, or make sure your booking was created successfully.</p>
+        </div>
+      </section>
+    </div>
+
+    <footer>© 2026 Shri Baglamukhi Mata Mandir. All rights reserved.</footer>
+  </main>
+
+  <script>
+    const BACKEND_URL = "https://mandir-website-baglamukhimata.onrender.com";
+
+    function safeText(value, fallback = "—") {
+      if (value === null || value === undefined) return fallback;
+      const text = String(value).trim();
+      return text ? text : fallback;
+    }
+
+    function formatDateValue(value) {
+      if (!value) return "—";
+      const dt = new Date(value);
+      if (Number.isNaN(dt.getTime())) return value;
+      return dt.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      });
+    }
+
+    function formatCurrency(value) {
+      const amount = Number(value || 0);
+      return amount > 0
+        ? new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 2 }).format(amount)
+        : "Price not specified";
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = safeText(value);
+    }
+
+    function fillReceipt(data) {
+      const formattedDate = formatDateValue(data.date);
+      const amountText = formatCurrency(data.amount);
+
+      setText("sum-id", data.bookingId);
+      setText("sum-name", data.name);
+      setText("sum-phone", data.phone);
+      setText("sum-service", data.service);
+      setText("sum-pandit", data.pandit || "Will be assigned by temple");
+      setText("sum-date", formattedDate);
+      setText("sum-time", data.time || "Will be coordinated by temple");
+      setText("sum-location", data.location);
+      setText("sum-amount", amountText);
+
+      setText("receipt-booking-id", "Booking ID: " + data.bookingId);
+      setText("meta-generated", new Date((data.createdAt || Math.floor(Date.now()/1000)) * 1000).toLocaleString("en-IN"));
+      setText("meta-booking-id", data.bookingId);
+
+      setText("r-name", data.name);
+      setText("r-phone", data.phone);
+      setText("r-email", data.email || "Not provided");
+      setText("r-service", data.service);
+      setText("r-pandit", data.pandit || "Will be assigned by temple");
+      setText("r-date", formattedDate);
+      setText("r-time", data.time || "Will be coordinated by temple");
+      setText("r-location", data.location);
+      setText("r-address", data.address || "Not provided");
+      setText("r-amount", amountText);
+    }
+
+    async function getBookingData() {
+      try {
+        const cached = sessionStorage.getItem("latestBookingReceipt");
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (parsed && parsed.bookingId) return parsed;
+        }
+      } catch (e) {}
+
+      const params = new URLSearchParams(window.location.search);
+      const bookingId = params.get("booking_id");
+      if (!bookingId) return null;
+
+      const res = await fetch(`${BACKEND_URL}/booking/${encodeURIComponent(bookingId)}`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data.booking || null;
+    }
+
+    (async function init() {
+      const booking = await getBookingData();
+      if (!booking) {
+        document.getElementById("empty-state").style.display = "block";
+        return;
+      }
+      try {
+        sessionStorage.setItem("latestBookingReceipt", JSON.stringify(booking));
+      } catch (e) {}
+      fillReceipt(booking);
+    })();
+  </script>
+</body>
+</html>
