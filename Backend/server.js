@@ -1,43 +1,19 @@
 import express from "express";
 import cors from "cors";
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
+import mongoose from "mongoose";
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+const MONGODB_URI = process.env.MONGODB_URI;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
 const PORT = process.env.PORT || 5000;
 
-const DATA_DIR = path.join(__dirname, "data");
-const DATA_FILE = path.join(DATA_DIR, "bookings.json");
-
-async function ensureStorage() {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  try {
-    await fs.access(DATA_FILE);
-  } catch {
-    await fs.writeFile(DATA_FILE, JSON.stringify({ items: [] }, null, 2), "utf8");
-  }
-}
-
-async function readStore() {
-  await ensureStorage();
-  const raw = await fs.readFile(DATA_FILE, "utf8");
-  const parsed = JSON.parse(raw || '{"items":[]}');
-  if (!Array.isArray(parsed.items)) return { items: [] };
-  return parsed;
-}
-
-async function writeStore(data) {
-  await ensureStorage();
-  await fs.writeFile(DATA_FILE, JSON.stringify(data, null, 2), "utf8");
+if (!MONGODB_URI) {
+  console.error("Missing required environment variable: MONGODB_URI");
+  process.exit(1);
 }
 
 function adminAuth(req, res, next) {
@@ -61,54 +37,42 @@ function generateBookingId() {
   return `BKM-${stamp}-${rand}`;
 }
 
-async function createBookingRecord(payload) {
-  const store = await readStore();
-  const booking = {
-    bookingId: generateBookingId(),
-    purpose: "booking",
-    name: safeText(payload.name),
-    phone: safeText(payload.phone),
-    email: safeText(payload.email),
-    service: safeText(payload.service),
-    pandit: safeText(payload.pandit),
-    date: safeText(payload.date),
-    time: safeText(payload.time),
-    location: safeText(payload.location),
-    address: safeText(payload.address),
-    note: safeText(payload.note),
-    amount: Number(payload.amount || 0),
-    paymentStatus: "cash pending",
-    bookingStatus: "submitted",
-    createdAt: Math.floor(Date.now() / 1000),
-    updatedAt: Math.floor(Date.now() / 1000),
-  };
-  store.items.push(booking);
-  await writeStore(store);
-  return booking;
-}
+const bookingSchema = new mongoose.Schema(
+  {
+    bookingId: { type: String, required: true, unique: true, index: true },
+    purpose: { type: String, default: "booking" },
+    name: { type: String, required: true },
+    phone: { type: String, required: true },
+    email: { type: String, default: "" },
+    service: { type: String, required: true },
+    pandit: { type: String, default: "" },
+    date: { type: String, default: "" },
+    time: { type: String, default: "" },
+    location: { type: String, required: true },
+    address: { type: String, default: "" },
+    note: { type: String, default: "" },
+    amount: { type: Number, default: 0 },
+    paymentStatus: { type: String, default: "cash pending" },
+    bookingStatus: { type: String, default: "submitted" },
+    createdAtUnix: { type: Number, default: () => Math.floor(Date.now() / 1000) },
+    updatedAtUnix: { type: Number, default: () => Math.floor(Date.now() / 1000) }
+  },
+  { timestamps: true }
+);
 
-async function updateBooking(bookingId, updates) {
-  const store = await readStore();
-  const index = store.items.findIndex((item) => item.bookingId === bookingId);
-  if (index === -1) return null;
-  store.items[index] = {
-    ...store.items[index],
-    ...updates,
-    updatedAt: Math.floor(Date.now() / 1000),
-  };
-  await writeStore(store);
-  return store.items[index];
-}
+const Booking = mongoose.models.Booking || mongoose.model("Booking", bookingSchema);
 
 app.get("/", (_req, res) => {
   res.json({
     ok: true,
     message: "Booking backend is running",
+    storage: "mongodb"
   });
 });
 
-app.get("/health", (_req, res) => {
-  res.json({ ok: true });
+app.get("/health", async (_req, res) => {
+  const ready = mongoose.connection.readyState === 1;
+  res.json({ ok: ready });
 });
 
 app.post("/create-booking", async (req, res) => {
@@ -124,11 +88,13 @@ app.post("/create-booking", async (req, res) => {
       location = "",
       address = "",
       note = "",
-      amount = 0,
+      amount = 0
     } = req.body;
 
     if (!name || !phone || !service || !location) {
-      return res.status(400).json({ error: "Name, phone, service, and location are required." });
+      return res.status(400).json({
+        error: "Name, phone, service, and location are required."
+      });
     }
 
     const cleanPhone = String(phone).replace(/\D/g, "");
@@ -136,23 +102,47 @@ app.post("/create-booking", async (req, res) => {
       return res.status(400).json({ error: "Valid phone number is required." });
     }
 
-    const booking = await createBookingRecord({
-      name,
+    const booking = await Booking.create({
+      bookingId: generateBookingId(),
+      purpose: "booking",
+      name: safeText(name),
       phone: cleanPhone.slice(-10),
-      email,
-      service,
-      pandit,
-      date,
-      time,
-      location,
-      address,
-      note,
-      amount,
+      email: safeText(email),
+      service: safeText(service),
+      pandit: safeText(pandit),
+      date: safeText(date),
+      time: safeText(time),
+      location: safeText(location),
+      address: safeText(address),
+      note: safeText(note),
+      amount: Number(amount || 0),
+      paymentStatus: "cash pending",
+      bookingStatus: "submitted",
+      createdAtUnix: Math.floor(Date.now() / 1000),
+      updatedAtUnix: Math.floor(Date.now() / 1000)
     });
 
     return res.json({
       success: true,
-      booking,
+      booking: {
+        bookingId: booking.bookingId,
+        purpose: booking.purpose,
+        name: booking.name,
+        phone: booking.phone,
+        email: booking.email,
+        service: booking.service,
+        pandit: booking.pandit,
+        date: booking.date,
+        time: booking.time,
+        location: booking.location,
+        address: booking.address,
+        note: booking.note,
+        amount: booking.amount,
+        paymentStatus: booking.paymentStatus,
+        bookingStatus: booking.bookingStatus,
+        createdAt: booking.createdAtUnix,
+        updatedAt: booking.updatedAtUnix
+      }
     });
   } catch (err) {
     console.error("Create booking error:", err);
@@ -162,12 +152,32 @@ app.post("/create-booking", async (req, res) => {
 
 app.get("/booking/:bookingId", async (req, res) => {
   try {
-    const store = await readStore();
-    const booking = store.items.find((item) => item.bookingId === req.params.bookingId);
+    const booking = await Booking.findOne({ bookingId: req.params.bookingId }).lean();
     if (!booking) {
       return res.status(404).json({ error: "Booking not found." });
     }
-    return res.json({ booking });
+
+    return res.json({
+      booking: {
+        bookingId: booking.bookingId,
+        purpose: booking.purpose,
+        name: booking.name,
+        phone: booking.phone,
+        email: booking.email,
+        service: booking.service,
+        pandit: booking.pandit,
+        date: booking.date,
+        time: booking.time,
+        location: booking.location,
+        address: booking.address,
+        note: booking.note,
+        amount: booking.amount,
+        paymentStatus: booking.paymentStatus,
+        bookingStatus: booking.bookingStatus,
+        createdAt: booking.createdAtUnix,
+        updatedAt: booking.updatedAtUnix
+      }
+    });
   } catch (err) {
     console.error("Fetch booking error:", err);
     return res.status(500).json({ error: "Failed to fetch booking." });
@@ -176,10 +186,12 @@ app.get("/booking/:bookingId", async (req, res) => {
 
 app.get("/admin/bookings", adminAuth, async (_req, res) => {
   try {
-    const store = await readStore();
-    const items = store.items
-      .filter((item) => item.purpose === "booking")
-      .map((item) => ({
+    const items = await Booking.find({ purpose: "booking" })
+      .sort({ createdAtUnix: -1 })
+      .lean();
+
+    return res.json({
+      items: items.map((item) => ({
         id: item.bookingId,
         bookingId: item.bookingId,
         name: item.name || "—",
@@ -194,11 +206,9 @@ app.get("/admin/bookings", adminAuth, async (_req, res) => {
         amount: Math.round(Number(item.amount || 0) * 100),
         paymentStatus: item.paymentStatus || "cash pending",
         bookingStatus: item.bookingStatus || "submitted",
-        createdAt: item.createdAt || 0,
+        createdAt: item.createdAtUnix || 0
       }))
-      .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-
-    return res.json({ items });
+    });
   } catch (err) {
     console.error("Admin bookings error:", err);
     return res.status(500).json({ error: "Failed to fetch bookings." });
@@ -208,16 +218,46 @@ app.get("/admin/bookings", adminAuth, async (_req, res) => {
 app.post("/admin/bookings/:bookingId/update", adminAuth, async (req, res) => {
   try {
     const { bookingStatus, paymentStatus } = req.body || {};
-    const updated = await updateBooking(req.params.bookingId, {
-      ...(bookingStatus ? { bookingStatus } : {}),
-      ...(paymentStatus ? { paymentStatus } : {}),
-    });
 
-    if (!updated) {
+    const update = {
+      updatedAtUnix: Math.floor(Date.now() / 1000)
+    };
+
+    if (bookingStatus) update.bookingStatus = bookingStatus;
+    if (paymentStatus) update.paymentStatus = paymentStatus;
+
+    const booking = await Booking.findOneAndUpdate(
+      { bookingId: req.params.bookingId },
+      { $set: update },
+      { new: true }
+    ).lean();
+
+    if (!booking) {
       return res.status(404).json({ error: "Booking not found." });
     }
 
-    return res.json({ success: true, booking: updated });
+    return res.json({
+      success: true,
+      booking: {
+        bookingId: booking.bookingId,
+        purpose: booking.purpose,
+        name: booking.name,
+        phone: booking.phone,
+        email: booking.email,
+        service: booking.service,
+        pandit: booking.pandit,
+        date: booking.date,
+        time: booking.time,
+        location: booking.location,
+        address: booking.address,
+        note: booking.note,
+        amount: booking.amount,
+        paymentStatus: booking.paymentStatus,
+        bookingStatus: booking.bookingStatus,
+        createdAt: booking.createdAtUnix,
+        updatedAt: booking.updatedAtUnix
+      }
+    });
   } catch (err) {
     console.error("Update booking error:", err);
     return res.status(500).json({ error: "Failed to update booking." });
@@ -230,8 +270,8 @@ app.get("/admin/donations", adminAuth, async (_req, res) => {
 
 app.get("/admin/dashboard-summary", adminAuth, async (_req, res) => {
   try {
-    const store = await readStore();
-    const bookings = store.items.filter((item) => item.purpose === "booking");
+    const bookings = await Booking.find({ purpose: "booking" }).lean();
+
     const cashPendingBookings = bookings.filter((item) => item.paymentStatus === "cash pending").length;
     const cashReceivedBookings = bookings.filter((item) => item.paymentStatus === "cash received").length;
     const completedBookings = bookings.filter((item) => item.bookingStatus === "completed").length;
@@ -242,7 +282,7 @@ app.get("/admin/dashboard-summary", adminAuth, async (_req, res) => {
       cashReceivedBookings,
       completedBookings,
       totalDonations: 0,
-      totalDonationAmount: 0,
+      totalDonationAmount: 0
     });
   } catch (err) {
     console.error("Dashboard summary error:", err);
@@ -250,13 +290,17 @@ app.get("/admin/dashboard-summary", adminAuth, async (_req, res) => {
   }
 });
 
-ensureStorage()
+mongoose
+  .connect(MONGODB_URI, {
+    serverSelectionTimeoutMS: 15000
+  })
   .then(() => {
+    console.log("MongoDB connected");
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
   })
   .catch((err) => {
-    console.error("Failed to initialize storage:", err);
+    console.error("MongoDB connection failed:", err);
     process.exit(1);
   });
