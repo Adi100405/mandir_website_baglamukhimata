@@ -146,6 +146,9 @@ async function createOrderInStore(data) {
 async function imbCreateOrder(payload) {
   const body = new URLSearchParams(payload).toString();
 
+  console.log("IMB create-order request payload:", payload);
+  console.log("IMB create-order request URL:", `${IMB_API_URL}/create-order`);
+
   const response = await fetch(`${IMB_API_URL}/create-order`, {
     method: "POST",
     headers: {
@@ -156,6 +159,9 @@ async function imbCreateOrder(payload) {
   });
 
   const text = await response.text();
+  console.log("IMB raw response status:", response.status);
+  console.log("IMB raw response text:", text);
+
   let data;
   try {
     data = JSON.parse(text);
@@ -164,7 +170,7 @@ async function imbCreateOrder(payload) {
   }
 
   if (!response.ok) {
-    throw new Error(extractMessage(data));
+    throw new Error(`IMB HTTP ${response.status}: ${text}`);
   }
 
   return data;
