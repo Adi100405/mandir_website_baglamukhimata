@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel — Booking Dashboard</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Panel — Booking Dashboard</title>
+<style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: "Segoe UI", sans-serif;
@@ -137,53 +138,49 @@
   </style>
 </head>
 <body>
-  <section id="login-screen">
-    <div class="login-box">
-      <h1>Temple Admin Panel</h1>
-      <p>Enter the admin password to view bookings.</p>
-      <input id="password-input" type="password" placeholder="Enter admin password" />
-      <button onclick="login()">Login</button>
-      <div class="error" id="login-error"></div>
-    </div>
-  </section>
-
-  <main id="admin-panel">
-    <div class="topbar">
-      <h1>Booking Dashboard</h1>
-      <div class="actions">
-        <button onclick="loadAll()">Refresh</button>
-        <button onclick="logout()">Logout</button>
-      </div>
-    </div>
-
-    <section class="stats">
-      <div class="stat-card">
-        <div class="stat-label">Total Bookings</div>
-        <div class="stat-value" id="stat-total-bookings">0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Cash Pending</div>
-        <div class="stat-value" id="stat-cash-pending">0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Cash Received</div>
-        <div class="stat-value" id="stat-cash-received">0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Completed Services</div>
-        <div class="stat-value" id="stat-completed-bookings">0</div>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h2>Bookings</h2>
-      <div id="bookings-body" class="table-wrap">
-        <div class="loading">Loading…</div>
-      </div>
-    </section>
-  </main>
-
-  <script>
+<section id="login-screen">
+<div class="login-box">
+<h1>Temple Admin Panel</h1>
+<p>Enter the admin password to view bookings.</p>
+<input id="password-input" placeholder="Enter admin password" type="password"/>
+<button onclick="login()">Login</button>
+<div class="error" id="login-error"></div>
+</div>
+</section>
+<main id="admin-panel">
+<div class="topbar">
+<h1>Booking Dashboard</h1>
+<div class="actions">
+<button onclick="loadAll()">Refresh</button>
+<button onclick="logout()">Logout</button>
+</div>
+</div>
+<section class="stats">
+<div class="stat-card">
+<div class="stat-label">Total Bookings</div>
+<div class="stat-value" id="stat-total-bookings">0</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Cash Pending</div>
+<div class="stat-value" id="stat-cash-pending">0</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Cash Received</div>
+<div class="stat-value" id="stat-cash-received">0</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Completed Services</div>
+<div class="stat-value" id="stat-completed-bookings">0</div>
+</div>
+</section>
+<section class="panel">
+<h2>Bookings</h2>
+<div class="table-wrap" id="bookings-body">
+<div class="loading">Loading…</div>
+</div>
+</section>
+</main>
+<script>
     const BASE = "https://mandir-website-baglamukhimata.onrender.com";
     let adminToken = "";
 
