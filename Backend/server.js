@@ -7,7 +7,13 @@ import crypto from "crypto";
 
 const app = express();
 
-app.use(express.json());
+app.use(
+  express.json({
+    verify: (req, _res, buf) => {
+      req.rawBody = buf;
+    }
+  })
+);
 app.use(cors());
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -272,6 +278,69 @@ app.post("/api/verify-payment", async (req, res) => {
   } catch (err) {
     console.error("Verify payment error:", err);
     return res.status(500).json({ error: "Failed to verify payment." });
+  }
+});
+
+app.post("/api/razorpay/webhook", async (req, res) => {
+  try {
+    const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+    const signature = req.headers["x-razorpay-signature"];
+
+    if (!secret) {
+      return res.status(500).json({ error: "Webhook secret is not configured." });
+    }
+
+    if (!signature || !req.rawBody) {
+      return res.status(400).json({ error: "Missing webhook signature or body." });
+    }
+
+    const expected = crypto.createHmac("sha256", secret).update(req.rawBody).digest("hex");
+
+    const expectedBuf = Buffer.from(expected, "utf8");
+    const receivedBuf = Buffer.from(String(signature), "utf8");
+    const match =
+      expectedBuf.length === receivedBuf.length && crypto.timingSafeEqual(expectedBuf, receivedBuf);
+
+    if (!match) {
+      return res.status(400).json({ error: "Invalid webhook signature." });
+    }
+
+    const event = req.body?.event || "";
+    const payment = req.body?.payload?.payment?.entity || null;
+    const orderId = payment?.order_id || "";
+    const paymentId = payment?.id || "";
+
+    if (event === "payment.captured" && orderId && paymentId) {
+      await Booking.findOneAndUpdate(
+        { "razorpay.orderId": orderId },
+        {
+          $set: {
+            paymentStatus: "razorpay paid",
+            "razorpay.paymentId": paymentId,
+            updatedAtUnix: Math.floor(Date.now() / 1000)
+          }
+        },
+        { new: false }
+      );
+    }
+
+    if (event === "payment.failed" && orderId) {
+      await Booking.findOneAndUpdate(
+        { "razorpay.orderId": orderId },
+        {
+          $set: {
+            paymentStatus: "razorpay failed",
+            updatedAtUnix: Math.floor(Date.now() / 1000)
+          }
+        },
+        { new: false }
+      );
+    }
+
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error("Webhook error:", err);
+    return res.status(500).json({ error: "Webhook handling failed." });
   }
 });
 
