@@ -71,7 +71,7 @@
       position: relative;
       background-size: cover;
       background-repeat: no-repeat;
-      background-position: center 6%;
+      background-position: center 12%;
     }
     
 
@@ -793,13 +793,7 @@
     .toast.show { transform: translateY(0); opacity: 1; }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 1024px) {
-      .hero {
-        background-position: center 12%;
-      }
-    }
-
-    @media (max-width: 768px) {
+        @media (max-width: 768px) {
       .hero {
         background-size: cover;
         background-position: center 16%;
