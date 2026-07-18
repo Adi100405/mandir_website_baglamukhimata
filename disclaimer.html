@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link rel="icon" href="favicon.ico" sizes="any">
+<title>Disclaimer — Shri Baglamukhi Mata Mandir</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&amp;family=Cinzel:wght@400;600;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+      --saffron: #FF6B00;
+      --deep-saffron: #E05A00;
+      --gold: #D4AF37;
+      --gold-light: #F5D76E;
+      --cream: #FFF8EE;
+      --deep-maroon: #3D0C11;
+      --maroon: #6B1A24;
+      --brown: #8B4513;
+      --dark: #1A0A00;
+      --text: #2C1810;
+      --text-light: #6B4C3B;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'EB Garamond', serif;
+      background:
+        linear-gradient(180deg, rgba(61,12,17,0.96), rgba(26,10,0,0.92)),
+        var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(61,12,17,0.97);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid var(--gold);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-brand {
+      font-family: 'Cinzel Decorative', cursive;
+      color: var(--gold);
+      font-size: 1.05rem;
+      letter-spacing: 1px;
+    }
+
+    .nav-link {
+      color: var(--cream);
+      text-decoration: none;
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      border: 1px solid rgba(212,175,55,0.35);
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      transition: all 0.25s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--gold);
+      border-color: var(--gold);
+      background: rgba(212,175,55,0.08);
+    }
+
+    .page-wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 3rem 1.25rem 4rem;
+    }
+
+    .policy-card {
+      background: linear-gradient(180deg, rgba(255,248,238,0.98), rgba(255,248,238,0.94));
+      border: 2px solid rgba(212,175,55,0.35);
+      border-radius: 22px;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.22);
+      overflow: hidden;
+    }
+
+    .policy-hero {
+      background: linear-gradient(135deg, var(--deep-maroon), var(--maroon));
+      padding: 2.5rem 2rem;
+      border-bottom: 2px solid rgba(212,175,55,0.22);
+      text-align: center;
+    }
+
+    .policy-hero .tag {
+      display: inline-block;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      background: rgba(212,175,55,0.14);
+      border: 1px solid rgba(245,215,110,0.28);
+      color: var(--gold-light);
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    .policy-hero h1 {
+      font-family: 'Cinzel', serif;
+      color: var(--gold-light);
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 0.9rem;
+    }
+
+    .policy-hero p {
+      max-width: 720px;
+      margin: 0 auto;
+      color: rgba(255,248,238,0.82);
+      font-size: 1.08rem;
+      line-height: 1.7;
+    }
+
+    .policy-body {
+      padding: 2rem;
+    }
+
+    .intro-box {
+      background: rgba(212,175,55,0.08);
+      border-left: 4px solid var(--gold);
+      padding: 1rem 1.1rem;
+      border-radius: 10px;
+      margin-bottom: 1.8rem;
+      color: var(--text-light);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .policy-section {
+      padding: 1.35rem 0;
+      border-bottom: 1px solid rgba(107,26,36,0.12);
+    }
+
+    .policy-section:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .policy-section h2 {
+      font-family: 'Cinzel', serif;
+      color: var(--deep-maroon);
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .policy-section p,
+    .policy-section li {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--text-light);
+    }
+
+    .policy-section ul {
+      margin: 0.7rem 0 0 1.4rem;
+    }
+
+    .policy-section li + li {
+      margin-top: 0.35rem;
+    }
+
+    .contact-box {
+      margin-top: 0.9rem;
+      padding: 1rem 1.1rem;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,107,0,0.08), rgba(212,175,55,0.12));
+      border: 1px solid rgba(212,175,55,0.28);
+    }
+
+    .contact-box p {
+      margin-bottom: 0.45rem;
+    }
+
+    .contact-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .contact-box a {
+      color: var(--deep-maroon);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .contact-box a:hover {
+      text-decoration: underline;
+    }
+
+    .last-updated {
+      margin-top: 1.75rem;
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      color: var(--maroon);
+      font-size: 0.92rem;
+      letter-spacing: 0.5px;
+    }
+
+    footer {
+      background: var(--dark);
+      padding: 1.6rem 1rem;
+      border-top: 2px solid var(--gold);
+      text-align: center;
+      color: rgba(255,248,238,0.45);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 0 1rem;
+      }
+
+      .nav-brand {
+        font-size: 0.9rem;
+        max-width: 58%;
+        line-height: 1.25;
+      }
+
+      .nav-link {
+        font-size: 0.75rem;
+        padding: 0.45rem 0.8rem;
+      }
+
+      .page-wrap {
+        padding: 1.5rem 0.9rem 2.5rem;
+      }
+
+      .policy-hero,
+      .policy-body {
+        padding: 1.35rem;
+      }
+
+      .policy-section h2 {
+        font-size: 1.05rem;
+      }
+
+      .policy-section p,
+      .policy-section li,
+      .intro-box {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<nav>
+<div class="nav-brand">🛕 Shri Baglamukhi Mata Mandir</div>
+<a class="nav-link" href="index.html">← Back to Home</a>
+</nav>
+<main class="page-wrap">
+<div class="policy-card">
+<section class="policy-hero">
+<div class="tag">Legal</div>
+<h1>Disclaimer</h1>
+<p>Please read this disclaimer carefully before relying on information or booking puja, ritual, or temple services through Shri Baglamukhi Mata Mandir.</p>
+</section>
+<section class="policy-body">
+<div class="intro-box">The content on this website is provided to offer general information about the temple, puja bookings, ritual services, schedules, and spiritual activities. By using the website or booking temple services, you acknowledge and accept the terms stated in this disclaimer.</div>
+<div class="policy-section">
+<h2>General Information</h2>
+<p>The information provided on this website and by Shri Baglamukhi Mata Mandir is for general informational purposes only. While we strive to keep the information accurate and up to date, we make no warranties regarding completeness, accuracy, reliability, or availability.</p>
+</div>
+<div class="policy-section">
+<h2>Religious Services Disclaimer</h2>
+<p>Puja, ritual, consultation, and spiritual services conducted through or at the temple are based on traditional Hindu practices and beliefs. Individual experiences and outcomes may vary, and no specific spiritual, material, legal, financial, medical, or health-related results are guaranteed.</p>
+</div>
+<div class="policy-section">
+<h2>Puja Booking and Service Charges</h2>
+<p>Charges shown or communicated through this website relate to puja, ritual, consultation, or temple service bookings. Booking acceptance, scheduling, rescheduling, and refunds are subject to temple availability, ritual preparation, priest availability, and the applicable Refund and Cancellation Policy.</p>
+</div>
+<div class="policy-section">
+<h2>Event Schedule Changes</h2>
+<p>Puja schedules, darshan timings, and temple services are subject to change due to religious observances, priest availability, maintenance, or unforeseen circumstances. Devotees are advised to confirm schedules before visiting or attending a booked service.</p>
+</div>
+<div class="policy-section">
+<h2>Health and Safety</h2>
+<p>Visitors and devotees participate in temple activities and booked services at their own risk. Shri Baglamukhi Mata Mandir is not liable for injuries, accidents, travel delays, personal loss, or health issues occurring on or around the premises.</p>
+</div>
+<div class="policy-section">
+<h2>External Links</h2>
+<p>This website may contain links to third-party websites. The temple has no control over and assumes no responsibility for the content, privacy policies, or practices of external sites.</p>
+</div>
+<div class="policy-section">
+<h2>Photography and Media</h2>
+<p>By visiting the temple or attending events, visitors consent to being photographed or recorded for promotional or informational purposes. Those who do not wish to be included should inform temple staff.</p>
+</div>
+<div class="policy-section">
+<h2>Professional Advice Disclaimer</h2>
+<p>Spiritual guidance or counseling provided by temple priests and staff is based on religious tradition and should not be considered a substitute for professional medical, legal, financial, or psychological advice.</p>
+</div>
+<div class="policy-section">
+<h2>Personal Belongings</h2>
+<p>The temple is not responsible for loss, theft, or damage to personal belongings. Visitors are advised to take care of their valuables.</p>
+</div>
+<div class="policy-section">
+<h2>Limitation of Liability</h2>
+<p>Shri Baglamukhi Mata Mandir, its management, priests, staff, and volunteers shall not be liable for any direct or indirect damages arising from use of this website, booking of puja/services, participation in temple activities, or reliance on provided information.</p>
+</div>
+<div class="policy-section">
+<h2>Modifications to Disclaimer</h2>
+<p>This disclaimer may be updated at any time without prior notice. Continued use of the website or temple services constitutes acceptance of the revised disclaimer.</p>
+</div>
+<div class="policy-section">
+<h2>Contact Us</h2>
+<p>If you have any questions regarding this disclaimer, please contact us:</p>
+<div class="contact-box">
+<p><strong>Email:</strong> <a href="mailto:baglamukhimatagrn@gmail.com">baglamukhimatagrn@gmail.com</a></p>
+<p><strong>Phone:</strong> <a href="tel:+919412168848">+91 94121 68848</a></p>
+<p><strong>Address:</strong><br/>
+          Shri Shakti Mandir, Maa Pitambara Baglamukhi Pith, Side 4, Near Gate 6, Greater Noida, Gautam Buddha Nagar, Uttar Pradesh - 201310
+        </p>
+</div>
+</div>
+<div class="last-updated">Last updated: January 2026</div>
+</section>
+</div>
+</main>
+<footer>© 2026 Shri Baglamukhi Mata Mandir. All rights reserved.</footer>
+</body>
+</html>

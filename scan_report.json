@@ -1,0 +1,65 @@
+{
+  "index.html": {
+    "http://": false,
+    "vercel.app": false,
+    "donation": false,
+    "donate": false,
+    "admin link": false
+  },
+  "admin.html": {
+    "http://": false,
+    "vercel.app": false,
+    "donation": false,
+    "donate": false,
+    "admin link": false
+  },
+  "booking-success.html": {
+    "http://": false,
+    "vercel.app": false,
+    "donation": false,
+    "donate": false,
+    "admin link": false
+  },
+  "disclaimer.html": {
+    "http://": false,
+    "vercel.app": false,
+    "donation": false,
+    "donate": false,
+    "admin link": false
+  },
+  "privacy_policy.html": {
+    "http://": false,
+    "vercel.app": false,
+    "donation": false,
+    "donate": false,
+    "admin link": false
+  },
+  "refund-cancellation-policy.html": {
+    "http://": false,
+    "vercel.app": false,
+    "donation": false,
+    "donate": false,
+    "admin link": false
+  },
+  "Terms_of_Service.html": {
+    "http://": false,
+    "vercel.app": false,
+    "donation": false,
+    "donate": false,
+    "admin link": false
+  },
+  "vercel.json": {
+    "http://": false,
+    "vercel.app": false,
+    "donation": false,
+    "donate": false,
+    "admin link": false
+  },
+  "DEPLOYMENT_CHECKLIST.txt": {
+    "http://": true,
+    "vercel.app": true,
+    "donation": true,
+    "donate": true,
+    "admin link": false
+  }
+}
