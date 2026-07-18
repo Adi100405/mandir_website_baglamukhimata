@@ -1,5 +1,4 @@
 var modalService = '';
-  var modalPandit = '';
 
   function selectServiceAndScroll(service) {
     var serviceSelect = document.getElementById('f-service');
@@ -40,18 +39,10 @@ var modalService = '';
 
   function openBooking(service) {
     modalService = service;
-    modalPandit = '';
     selectServiceAndScroll(service);
   }
 
-  function openBookingPandit(pandit) {
-    modalPandit = pandit;
-    modalService = '';
-    document.getElementById('modal-title').textContent = 'Book with ' + pandit;
-    document.getElementById('modal').classList.add('active');
-  }
-
-  function closeModal() {
+    function closeModal() {
     document.getElementById('modal').classList.remove('active');
   }
 
@@ -118,8 +109,6 @@ var modalService = '';
     var service = document.getElementById('f-service').value;
     var participantsGroup = document.getElementById('mirchi-participants-group');
     var participantsInput = document.getElementById('f-participants');
-    var panditGroup = document.getElementById('pandit-group');
-    var panditSelect = document.getElementById('f-pandit');
     var dateInput = document.getElementById('f-date');
     var timeSelect = document.getElementById('f-time');
     var fixedTimeOption = timeSelect ? timeSelect.querySelector('option[data-special="mirchi-hawan"]') : null;
@@ -134,12 +123,6 @@ var modalService = '';
       if (!isMirchi || !participantsInput.value || Number(participantsInput.value) < 1) {
         participantsInput.value = '1';
       }
-    }
-    if (panditGroup) {
-      panditGroup.style.display = isMirchi ? 'none' : '';
-    }
-    if (panditSelect && isMirchi) {
-      panditSelect.value = '';
     }
     if (dateInput) {
       dateInput.min = isMirchi ? MIRCHI_HAWAN_START : today;
@@ -447,7 +430,7 @@ var modalService = '';
     var name = document.getElementById('f-name').value.trim();
     var phone = document.getElementById('f-phone').value.trim();
     var service = document.getElementById('f-service').value;
-    var pandit = document.getElementById('f-pandit').value;
+    var gotra = document.getElementById('f-gotra').value.trim();
     var date = document.getElementById('f-date').value;
     var time = document.getElementById('f-time').value;
     var location = document.getElementById('f-loc').value;
@@ -457,7 +440,7 @@ var modalService = '';
     var pricing = calculateBookingPrice();
     var isMirchi = isMirchiHawanService(service);
     var participants = getMirchiParticipantCount();
-    var panditToSend = isMirchi ? '' : pandit;
+    var gotraToSend = gotra;
     var timeToSend = isMirchi ? MIRCHI_HAWAN_TIME : time;
     var locationToSend = isMirchi ? 'At the Temple' : location;
     var finalNote = buildBookingNote(note, service);
@@ -499,7 +482,7 @@ var modalService = '';
         name: name,
         phone: phone,
         service: service,
-        pandit: panditToSend,
+        gotra: gotraToSend,
         date: date,
         time: timeToSend,
         location: locationToSend,
@@ -514,7 +497,7 @@ var modalService = '';
       document.getElementById('f-name').value = '';
       document.getElementById('f-phone').value = '';
       document.getElementById('f-service').value = '';
-      document.getElementById('f-pandit').value = '';
+      document.getElementById('f-gotra').value = '';
       document.getElementById('f-participants').value = '1';
       document.getElementById('f-date').value = '';
       document.getElementById('f-time').selectedIndex = 0;

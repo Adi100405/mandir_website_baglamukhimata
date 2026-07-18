@@ -313,7 +313,7 @@
 <div class="summary-item"><span class="summary-label">Devotee Name</span><span class="summary-value" id="sum-name">—</span></div>
 <div class="summary-item"><span class="summary-label">Phone Number</span><span class="summary-value" id="sum-phone">—</span></div>
 <div class="summary-item"><span class="summary-label">Service</span><span class="summary-value" id="sum-service">—</span></div>
-<div class="summary-item"><span class="summary-label">Pandit</span><span class="summary-value" id="sum-pandit">—</span></div>
+<div class="summary-item"><span class="summary-label">Gotra</span><span class="summary-value" id="sum-gotra">—</span></div>
 <div class="summary-item"><span class="summary-label">Booking Date</span><span class="summary-value" id="sum-date">—</span></div>
 <div class="summary-item"><span class="summary-label">Preferred Time</span><span class="summary-value" id="sum-time">—</span></div>
 <div class="summary-item"><span class="summary-label">Location</span><span class="summary-value" id="sum-location">—</span></div>
@@ -351,7 +351,7 @@
 <tr><th>Phone Number</th><td id="r-phone">—</td></tr>
 <tr><th>Email</th><td id="r-email">—</td></tr>
 <tr><th>Service / Ritual</th><td id="r-service">—</td></tr>
-<tr><th>Pandit</th><td id="r-pandit">—</td></tr>
+<tr><th>Gotra</th><td id="r-gotra">—</td></tr>
 <tr><th>Booking Date</th><td id="r-date">—</td></tr>
 <tr><th>Preferred Time</th><td id="r-time">—</td></tr>
 <tr><th>Location</th><td id="r-location">—</td></tr>
@@ -408,7 +408,7 @@
       setText("sum-name", data.name);
       setText("sum-phone", data.phone);
       setText("sum-service", data.service);
-      setText("sum-pandit", data.pandit || "Will be assigned by temple");
+      setText("sum-gotra", data.gotra || data.pandit || "Not provided");
       setText("sum-date", formattedDate);
       setText("sum-time", data.time || "Will be coordinated by temple");
       setText("sum-location", data.location);
@@ -422,7 +422,7 @@
       setText("r-phone", data.phone);
       setText("r-email", data.email || "Not provided");
       setText("r-service", data.service);
-      setText("r-pandit", data.pandit || "Will be assigned by temple");
+      setText("r-gotra", data.gotra || data.pandit || "Not provided");
       setText("r-date", formattedDate);
       setText("r-time", data.time || "Will be coordinated by temple");
       setText("r-location", data.location);

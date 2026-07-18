@@ -61,6 +61,7 @@ const bookingSchema = new mongoose.Schema(
     phone: { type: String, required: true },
     email: { type: String, default: "" },
     service: { type: String, required: true },
+    gotra: { type: String, default: "" },
     pandit: { type: String, default: "" },
     date: { type: String, default: "" },
     time: { type: String, default: "" },
@@ -211,6 +212,7 @@ app.post("/create-booking", async (req, res) => {
       phone = "",
       email = "",
       service = "",
+      gotra = "",
       pandit = "",
       date = "",
       time = "",
@@ -238,7 +240,7 @@ app.post("/create-booking", async (req, res) => {
     }
 
     const safeDate = safeText(date);
-    const safePandit = isMirchiHawanService(pricing.service) ? "" : safeText(pandit);
+    const safeGotra = safeText(gotra || pandit);
     const safeTime = isMirchiHawanService(pricing.service) ? MIRCHI_HAWAN_TIME : safeText(time);
     const safeAddress =
       pricing.location === "At My Home" || pricing.location === "Other Location" ? safeText(address) : "";
@@ -263,7 +265,8 @@ app.post("/create-booking", async (req, res) => {
       phone: cleanPhone.slice(-10),
       email: safeText(email),
       service: pricing.service,
-      pandit: safePandit,
+      gotra: safeGotra,
+      pandit: "",
       date: safeDate,
       time: safeTime,
       location: pricing.location,
@@ -286,7 +289,7 @@ app.post("/create-booking", async (req, res) => {
         phone: booking.phone,
         email: booking.email,
         service: booking.service,
-        pandit: booking.pandit,
+        gotra: booking.gotra || booking.pandit || "",
         date: booking.date,
         time: booking.time,
         location: booking.location,
@@ -492,7 +495,7 @@ app.get("/booking/:bookingId", async (req, res) => {
         phone: booking.phone,
         email: booking.email,
         service: booking.service,
-        pandit: booking.pandit,
+        gotra: booking.gotra || booking.pandit || "",
         date: booking.date,
         time: booking.time,
         location: booking.location,
@@ -527,7 +530,7 @@ app.get("/admin/bookings", adminAuth, async (_req, res) => {
         phone: item.phone || "—",
         email: item.email || "—",
         service: item.service || "—",
-        pandit: item.pandit || "—",
+        gotra: item.gotra || item.pandit || "—",
         date: item.date || "—",
         time: item.time || "—",
         location: item.location || "—",
@@ -575,7 +578,7 @@ app.post("/admin/bookings/:bookingId/update", adminAuth, async (req, res) => {
         phone: booking.phone,
         email: booking.email,
         service: booking.service,
-        pandit: booking.pandit,
+        gotra: booking.gotra || booking.pandit || "",
         date: booking.date,
         time: booking.time,
         location: booking.location,

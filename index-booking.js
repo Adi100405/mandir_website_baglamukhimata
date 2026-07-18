@@ -16,7 +16,7 @@ const BACKEND_URL =
         phone: meta.phone || "",
         email: meta.email || "",
         service: meta.service || "",
-        pandit: meta.pandit || "",
+        gotra: meta.gotra || "",
         date: meta.date || "",
         time: meta.time || "",
         location: meta.location || "",
@@ -55,7 +55,7 @@ const BACKEND_URL =
     var name = document.getElementById('f-name').value.trim();
     var phone = document.getElementById('f-phone').value.trim();
     var service = document.getElementById('f-service').value;
-    var pandit = document.getElementById('f-pandit').value;
+    var gotra = document.getElementById('f-gotra').value.trim();
     var date = document.getElementById('f-date').value;
     var time = document.getElementById('f-time').value;
     var location = document.getElementById('f-loc').value;
@@ -65,7 +65,7 @@ const BACKEND_URL =
     var pricing = calculateBookingPrice();
     var isMirchi = isMirchiHawanService(service);
     var participants = getMirchiParticipantCount();
-    var panditToSend = isMirchi ? '' : pandit;
+    var gotraToSend = gotra;
     var timeToSend = isMirchi ? MIRCHI_HAWAN_TIME : time;
     var locationToSend = isMirchi ? 'At the Temple' : location;
     var finalNote = buildBookingNote(note, service);
@@ -119,7 +119,7 @@ const BACKEND_URL =
           phone: phone,
           email: email,
           service: service,
-          pandit: panditToSend,
+          gotra: gotraToSend,
           date: date,
           time: timeToSend,
           location: locationToSend,
