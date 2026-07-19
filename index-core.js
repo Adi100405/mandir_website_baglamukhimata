@@ -105,6 +105,10 @@ var modalService = '';
     return note ? note + ' | ' + extra : extra;
   }
 
+  function isValidEmailAddress(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
+  }
+
   function updateMirchiHawanFields() {
     var service = document.getElementById('f-service').value;
     var participantsGroup = document.getElementById('mirchi-participants-group');
@@ -446,8 +450,13 @@ var modalService = '';
     var finalNote = buildBookingNote(note, service);
     var submitBtn = document.querySelector('.form-submit');
 
-    if (!name || !phone || !service || !date || !timeToSend) {
-      alert("Please fill all required fields, including preferred time slot.");
+    if (!name || !phone || !service || !date || !timeToSend || !email) {
+      alert("Please fill all required fields, including email and preferred time slot.");
+      return;
+    }
+
+    if (!isValidEmailAddress(email)) {
+      alert("Please enter a valid email address.");
       return;
     }
 

@@ -71,8 +71,13 @@ const BACKEND_URL =
     var finalNote = buildBookingNote(note, service);
     var payBtn = document.getElementById('booking-pay-btn');
 
-    if (!name || !phone || !service || !date || !timeToSend) {
-      alert("Please fill all required fields, including preferred time slot.");
+    if (!name || !phone || !service || !date || !timeToSend || !email) {
+      alert("Please fill all required fields, including email and preferred time slot.");
+      return;
+    }
+
+    if (!isValidEmailAddress(email)) {
+      alert("Please enter a valid email address.");
       return;
     }
 

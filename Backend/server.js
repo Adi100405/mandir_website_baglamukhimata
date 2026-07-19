@@ -46,6 +46,10 @@ function safeText(value, fallback = "") {
   return text ? text : fallback;
 }
 
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || "").trim());
+}
+
 function generateBookingId() {
   const now = new Date();
   const stamp = now.toISOString().replace(/[-:.TZ]/g, "").slice(0, 14);
@@ -59,7 +63,7 @@ const bookingSchema = new mongoose.Schema(
     purpose: { type: String, default: "booking" },
     name: { type: String, required: true },
     phone: { type: String, required: true },
-    email: { type: String, default: "" },
+    email: { type: String, required: true, trim: true },
     service: { type: String, required: true },
     gotra: { type: String, default: "" },
     pandit: { type: String, default: "" },
@@ -223,15 +227,20 @@ app.post("/create-booking", async (req, res) => {
       paymentMode = "cash"
     } = req.body;
 
-    if (!name || !phone || !service || !location) {
+    if (!name || !phone || !email || !service || !location) {
       return res.status(400).json({
-        error: "Name, phone, service, and location are required."
+        error: "Name, phone, email, service, and location are required."
       });
     }
 
     const cleanPhone = String(phone).replace(/\D/g, "");
     if (cleanPhone.length < 10) {
       return res.status(400).json({ error: "Valid phone number is required." });
+    }
+
+    const cleanEmail = safeText(email).toLowerCase();
+    if (!isValidEmail(cleanEmail)) {
+      return res.status(400).json({ error: "Valid email address is required." });
     }
 
     const pricing = resolveBookingPricing({ service, location, participants });
@@ -263,7 +272,7 @@ app.post("/create-booking", async (req, res) => {
       purpose: "booking",
       name: safeText(name),
       phone: cleanPhone.slice(-10),
-      email: safeText(email),
+      email: cleanEmail,
       service: pricing.service,
       gotra: safeGotra,
       pandit: "",
