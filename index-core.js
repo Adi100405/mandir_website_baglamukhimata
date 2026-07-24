@@ -61,6 +61,15 @@ var modalService = '';
     document.getElementById('f-participants').addEventListener('input', calculateBookingPrice);
     document.getElementById('f-participants').addEventListener('change', calculateBookingPrice);
 
+    var phoneInput = document.getElementById('f-phone');
+    var whatsappInput = document.getElementById('f-whatsapp');
+    if (phoneInput && whatsappInput) {
+      phoneInput.addEventListener('input', syncPreferredWhatsappNumber);
+      whatsappInput.addEventListener('input', handlePreferredWhatsappInput);
+      whatsappInput.addEventListener('blur', ensurePreferredWhatsappNumber);
+      syncPreferredWhatsappNumber();
+    }
+
     applyServiceLocationRules();
     updateAvailableTimeSlots();
     setInterval(updateAvailableTimeSlots, 60000);
@@ -107,6 +116,51 @@ var modalService = '';
 
   function isValidEmailAddress(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
+  }
+
+  function isValidPhoneNumber(value) {
+    return String(value || '').replace(/\D/g, '').length >= 10;
+  }
+
+  function getPreferredWhatsappNumber() {
+    var phoneInput = document.getElementById('f-phone');
+    var whatsappInput = document.getElementById('f-whatsapp');
+    var phone = phoneInput ? phoneInput.value.trim() : '';
+    var whatsapp = whatsappInput ? whatsappInput.value.trim() : '';
+    return whatsapp || phone;
+  }
+
+  function syncPreferredWhatsappNumber() {
+    var phoneInput = document.getElementById('f-phone');
+    var whatsappInput = document.getElementById('f-whatsapp');
+    if (!phoneInput || !whatsappInput) return;
+    var phone = phoneInput.value.trim();
+    var whatsapp = whatsappInput.value.trim();
+    var autoFill = whatsappInput.dataset.autoFill !== 'manual';
+    if (!whatsapp || autoFill) {
+      whatsappInput.value = phone;
+      whatsappInput.dataset.autoFill = 'auto';
+    }
+  }
+
+  function handlePreferredWhatsappInput() {
+    var phoneInput = document.getElementById('f-phone');
+    var whatsappInput = document.getElementById('f-whatsapp');
+    if (!whatsappInput) return;
+    var phone = phoneInput ? phoneInput.value.trim() : '';
+    var whatsapp = whatsappInput.value.trim();
+    whatsappInput.dataset.autoFill = !whatsapp || whatsapp === phone ? 'auto' : 'manual';
+  }
+
+  function ensurePreferredWhatsappNumber() {
+    var phoneInput = document.getElementById('f-phone');
+    var whatsappInput = document.getElementById('f-whatsapp');
+    if (!whatsappInput) return '';
+    var resolved = getPreferredWhatsappNumber();
+    whatsappInput.value = resolved;
+    whatsappInput.dataset.autoFill =
+      resolved && phoneInput && resolved === phoneInput.value.trim() ? 'auto' : 'manual';
+    return resolved;
   }
 
   function updateMirchiHawanFields() {
@@ -439,6 +493,7 @@ var modalService = '';
     var time = document.getElementById('f-time').value;
     var location = document.getElementById('f-loc').value;
     var address = document.getElementById('f-address').value.trim();
+    var whatsapp = ensurePreferredWhatsappNumber();
     var email = document.getElementById('f-email').value.trim();
     var note = document.getElementById('f-note').value.trim();
     var pricing = calculateBookingPrice();
@@ -450,12 +505,22 @@ var modalService = '';
     var finalNote = buildBookingNote(note, service);
     var submitBtn = document.querySelector('.form-submit');
 
-    if (!name || !phone || !service || !date || !timeToSend || !email) {
-      alert("Please fill all required fields, including email and preferred time slot.");
+    if (!name || !phone || !whatsapp || !service || !date || !timeToSend) {
+      alert("Please fill all required fields, including preferred WhatsApp number and preferred time slot.");
       return;
     }
 
-    if (!isValidEmailAddress(email)) {
+    if (!isValidPhoneNumber(phone)) {
+      alert("Please enter a valid mobile number.");
+      return;
+    }
+
+    if (!isValidPhoneNumber(whatsapp)) {
+      alert("Please enter a valid preferred WhatsApp number.");
+      return;
+    }
+
+    if (email && !isValidEmailAddress(email)) {
       alert("Please enter a valid email address.");
       return;
     }
@@ -490,6 +555,7 @@ var modalService = '';
         purpose: "booking",
         name: name,
         phone: phone,
+        preferredWhatsapp: whatsapp,
         service: service,
         gotra: gotraToSend,
         date: date,
@@ -505,6 +571,8 @@ var modalService = '';
 
       document.getElementById('f-name').value = '';
       document.getElementById('f-phone').value = '';
+      document.getElementById('f-whatsapp').value = '';
+      document.getElementById('f-whatsapp').dataset.autoFill = 'auto';
       document.getElementById('f-service').value = '';
       document.getElementById('f-gotra').value = '';
       document.getElementById('f-participants').value = '1';

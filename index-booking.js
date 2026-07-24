@@ -14,6 +14,7 @@ const BACKEND_URL =
         purpose: "booking",
         name: meta.name || "",
         phone: meta.phone || "",
+        preferredWhatsapp: meta.preferredWhatsapp || meta.phone || "",
         email: meta.email || "",
         service: meta.service || "",
         gotra: meta.gotra || "",
@@ -60,6 +61,9 @@ const BACKEND_URL =
     var time = document.getElementById('f-time').value;
     var location = document.getElementById('f-loc').value;
     var address = document.getElementById('f-address').value.trim();
+    var whatsapp = typeof ensurePreferredWhatsappNumber === 'function'
+      ? ensurePreferredWhatsappNumber()
+      : ((document.getElementById('f-whatsapp') && document.getElementById('f-whatsapp').value.trim()) || phone);
     var email = document.getElementById('f-email').value.trim();
     var note = document.getElementById('f-note').value.trim();
     var pricing = calculateBookingPrice();
@@ -71,12 +75,22 @@ const BACKEND_URL =
     var finalNote = buildBookingNote(note, service);
     var payBtn = document.getElementById('booking-pay-btn');
 
-    if (!name || !phone || !service || !date || !timeToSend || !email) {
-      alert("Please fill all required fields, including email and preferred time slot.");
+    if (!name || !phone || !whatsapp || !service || !date || !timeToSend) {
+      alert("Please fill all required fields, including preferred WhatsApp number and preferred time slot.");
       return;
     }
 
-    if (!isValidEmailAddress(email)) {
+    if (typeof isValidPhoneNumber === 'function' && !isValidPhoneNumber(phone)) {
+      alert("Please enter a valid mobile number.");
+      return;
+    }
+
+    if (typeof isValidPhoneNumber === 'function' && !isValidPhoneNumber(whatsapp)) {
+      alert("Please enter a valid preferred WhatsApp number.");
+      return;
+    }
+
+    if (email && !isValidEmailAddress(email)) {
       alert("Please enter a valid email address.");
       return;
     }
@@ -122,6 +136,7 @@ const BACKEND_URL =
           purpose: "booking",
           name: name,
           phone: phone,
+          preferredWhatsapp: whatsapp,
           email: email,
           service: service,
           gotra: gotraToSend,

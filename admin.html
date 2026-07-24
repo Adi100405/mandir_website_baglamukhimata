@@ -302,7 +302,7 @@
                 <tr>
                   <td><strong>${b.bookingId || b.id}</strong></td>
                   <td>${b.name}<div class="muted">${b.email && b.email !== "—" ? b.email : ""}</div></td>
-                  <td>${b.phone}</td>
+                  <td>${b.phone}<div class="muted">WhatsApp: ${b.preferredWhatsapp || b.phone || "—"}</div></td>
                   <td>${b.service}</td>
                   <td>${b.gotra || "—"}</td>
                   <td>${b.date || "—"}</td>

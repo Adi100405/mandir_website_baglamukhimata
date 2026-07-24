@@ -312,6 +312,7 @@
 <div class="summary-item"><span class="summary-label">Booking ID</span><span class="summary-value" id="sum-id">—</span></div>
 <div class="summary-item"><span class="summary-label">Devotee Name</span><span class="summary-value" id="sum-name">—</span></div>
 <div class="summary-item"><span class="summary-label">Phone Number</span><span class="summary-value" id="sum-phone">—</span></div>
+<div class="summary-item"><span class="summary-label">Preferred WhatsApp</span><span class="summary-value" id="sum-whatsapp">—</span></div>
 <div class="summary-item"><span class="summary-label">Service</span><span class="summary-value" id="sum-service">—</span></div>
 <div class="summary-item"><span class="summary-label">Gotra</span><span class="summary-value" id="sum-gotra">—</span></div>
 <div class="summary-item"><span class="summary-label">Booking Date</span><span class="summary-value" id="sum-date">—</span></div>
@@ -349,6 +350,7 @@
 <table class="receipt-table">
 <tr><th>Devotee Name</th><td id="r-name">—</td></tr>
 <tr><th>Phone Number</th><td id="r-phone">—</td></tr>
+<tr><th>Preferred WhatsApp</th><td id="r-whatsapp">—</td></tr>
 <tr><th>Email</th><td id="r-email">—</td></tr>
 <tr><th>Service / Ritual</th><td id="r-service">—</td></tr>
 <tr><th>Gotra</th><td id="r-gotra">—</td></tr>
@@ -407,6 +409,7 @@
       setText("sum-id", data.bookingId);
       setText("sum-name", data.name);
       setText("sum-phone", data.phone);
+      setText("sum-whatsapp", data.preferredWhatsapp || data.phone);
       setText("sum-service", data.service);
       setText("sum-gotra", data.gotra || data.pandit || "Not provided");
       setText("sum-date", formattedDate);
@@ -420,6 +423,7 @@
 
       setText("r-name", data.name);
       setText("r-phone", data.phone);
+      setText("r-whatsapp", data.preferredWhatsapp || data.phone);
       setText("r-email", data.email || "Not provided");
       setText("r-service", data.service);
       setText("r-gotra", data.gotra || data.pandit || "Not provided");

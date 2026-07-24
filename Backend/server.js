@@ -46,6 +46,10 @@ function safeText(value, fallback = "") {
   return text ? text : fallback;
 }
 
+function sanitizePhoneNumber(value) {
+  return String(value || "").replace(/\D/g, "");
+}
+
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || "").trim());
 }
@@ -63,7 +67,8 @@ const bookingSchema = new mongoose.Schema(
     purpose: { type: String, default: "booking" },
     name: { type: String, required: true },
     phone: { type: String, required: true },
-    email: { type: String, required: true, trim: true },
+    preferredWhatsapp: { type: String, required: true, trim: true },
+    email: { type: String, default: "", trim: true },
     service: { type: String, required: true },
     gotra: { type: String, default: "" },
     pandit: { type: String, default: "" },
@@ -214,6 +219,7 @@ app.post("/create-booking", async (req, res) => {
     const {
       name = "",
       phone = "",
+      preferredWhatsapp = "",
       email = "",
       service = "",
       gotra = "",
@@ -227,19 +233,24 @@ app.post("/create-booking", async (req, res) => {
       paymentMode = "cash"
     } = req.body;
 
-    if (!name || !phone || !email || !service || !location) {
+    if (!name || !phone || !service || !location) {
       return res.status(400).json({
-        error: "Name, phone, email, service, and location are required."
+        error: "Name, phone, service, and location are required."
       });
     }
 
-    const cleanPhone = String(phone).replace(/\D/g, "");
+    const cleanPhone = sanitizePhoneNumber(phone);
     if (cleanPhone.length < 10) {
       return res.status(400).json({ error: "Valid phone number is required." });
     }
 
+    const cleanPreferredWhatsapp = sanitizePhoneNumber(preferredWhatsapp || phone);
+    if (cleanPreferredWhatsapp.length < 10) {
+      return res.status(400).json({ error: "Valid preferred WhatsApp number is required." });
+    }
+
     const cleanEmail = safeText(email).toLowerCase();
-    if (!isValidEmail(cleanEmail)) {
+    if (cleanEmail && !isValidEmail(cleanEmail)) {
       return res.status(400).json({ error: "Valid email address is required." });
     }
 
@@ -272,6 +283,7 @@ app.post("/create-booking", async (req, res) => {
       purpose: "booking",
       name: safeText(name),
       phone: cleanPhone.slice(-10),
+      preferredWhatsapp: cleanPreferredWhatsapp.slice(-10),
       email: cleanEmail,
       service: pricing.service,
       gotra: safeGotra,
@@ -296,6 +308,7 @@ app.post("/create-booking", async (req, res) => {
         purpose: booking.purpose,
         name: booking.name,
         phone: booking.phone,
+        preferredWhatsapp: booking.preferredWhatsapp,
         email: booking.email,
         service: booking.service,
         gotra: booking.gotra || booking.pandit || "",
@@ -502,6 +515,7 @@ app.get("/booking/:bookingId", async (req, res) => {
         purpose: booking.purpose,
         name: booking.name,
         phone: booking.phone,
+        preferredWhatsapp: booking.preferredWhatsapp,
         email: booking.email,
         service: booking.service,
         gotra: booking.gotra || booking.pandit || "",
@@ -537,6 +551,7 @@ app.get("/admin/bookings", adminAuth, async (_req, res) => {
         bookingId: item.bookingId,
         name: item.name || "—",
         phone: item.phone || "—",
+        preferredWhatsapp: item.preferredWhatsapp || item.phone || "—",
         email: item.email || "—",
         service: item.service || "—",
         gotra: item.gotra || item.pandit || "—",
@@ -585,6 +600,7 @@ app.post("/admin/bookings/:bookingId/update", adminAuth, async (req, res) => {
         purpose: booking.purpose,
         name: booking.name,
         phone: booking.phone,
+        preferredWhatsapp: booking.preferredWhatsapp,
         email: booking.email,
         service: booking.service,
         gotra: booking.gotra || booking.pandit || "",
