@@ -21,7 +21,7 @@
   <meta name="twitter:description" content="Join the Gupt Navratri Maa Baglamukhi Hawan from 15 to 29 July, 8:00 PM to 9:00 PM, at Shri Baglamukhi Mata Mandir, Greater Noida." />
   <meta name="twitter:image" content="https://baglamukhimatagrn.in/media/og-gupt-navratri.jpg" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="index.css?v=20260718a"/>
+  <link rel="stylesheet" href="index.css?v=20260724b"/>
 
 </head>
 <body>
@@ -320,6 +320,7 @@
       <div class="service-name">दुर्गा सप्त शती पाठ — 9 पाठ</div>
       <div class="service-desc">Nine complete readings of Durga Saptashati for divine power, protection, and fulfillment from Maa Durga.</div>
       <span class="service-price">Book</span>
+      
     </div>
 
     <!-- ABHISHEK -->
@@ -853,37 +854,28 @@
 
 <!-- MODAL -->
 <div class="modal-overlay" id="modal">
-  <div class="modal">
+  <div class="modal service-learn-modal">
     <div class="modal-head">
-      <h3 id="modal-title">Book Puja</h3>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h3 id="modal-title">Service Details</h3>
+      <button class="modal-close" type="button" onclick="closeModal()" aria-label="Close popup">✕</button>
     </div>
-    <div class="modal-body">
-      <div class="form-grid" style="gap:1rem">
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" id="m-name" placeholder="Your name" />
+    <div class="modal-body service-modal-body" id="modal-body">
+      <div class="service-modal-media">
+        <img id="modal-image" src="media/services/baglamukhi_hawan.jpg" alt="Service image" />
+      </div>
+      <p class="service-modal-summary" id="modal-description"></p>
+      <div class="service-modal-meta">
+        <div class="service-modal-meta-item">
+          <span>Estimated Charge</span>
+          <strong id="modal-price">₹0</strong>
         </div>
-        <div class="form-group">
-          <label>Mobile</label>
-          <input type="tel" id="m-phone" placeholder="+91 XXXXX XXXXX" />
-        </div>
-        <div class="form-group">
-          <label>Preferred Date</label>
-          <input type="date" id="m-date" />
-        </div>
-        <div class="form-group">
-          <label>Preferred Time</label>
-          <select id="m-time">
-            <option value="">— Select Time Slot —</option>
-            <option value="Morning (6 AM – 9 AM)" data-end-hour="9">Morning (6 AM – 9 AM)</option>
-            <option value="Forenoon (9 AM – 12 PM)" data-end-hour="12">Forenoon (9 AM – 12 PM)</option>
-            <option value="Afternoon (12 PM – 4 PM)" data-end-hour="16">Afternoon (12 PM – 4 PM)</option>
-            <option value="Evening (4 PM – 7 PM)" data-end-hour="19">Evening (4 PM – 7 PM)</option>
-          </select>
+        <div class="service-modal-meta-item">
+          <span>Availability</span>
+          <strong id="modal-location">Temple / Home</strong>
         </div>
       </div>
-      <button class="modal-submit" onclick="submitModal()">🙏 Submit Booking Request</button>
+      <p class="service-modal-note" id="modal-note"></p>
+      <button class="modal-submit" id="modal-book-btn" type="button">Book This Service</button>
     </div>
   </div>
 </div>
@@ -891,7 +883,7 @@
 <!-- TOAST -->
 <div class="toast" id="toast">✅ Booking request submitted. We will contact you soon. 🙏</div>
 
-<script src="index-core.js?v=20260719a"></script>
+<script src="index-core.js?v=20260725a"></script>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="index-booking.js?v=20260719a"></script>

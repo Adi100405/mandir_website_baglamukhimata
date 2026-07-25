@@ -1,15 +1,266 @@
 var modalService = '';
+var SERVICE_CARD_DETAILS = {};
+var SERVICE_CARD_VISUALS = {
+  "karmakand|श्री बंगलामुखी हवन|0": "media/services/cards/karmakand_shri_banglamukhi_hawan.jpg",
+  "karmakand|Mirchi Hawan|1": "media/services/cards/karmakand_mirchi_hawan.jpg",
+  "karmakand|नज़र बाधा निवारण|2": "media/services/cards/karmakand_nazar_badha_nivaran.jpg",
+  "karmakand|तन्त्र बाधा निवारण|3": "media/services/cards/karmakand_tantra_badha_nivaran.jpg",
+  "karmakand|शत्रु बाधा|4": "media/services/cards/protection_ritual.jpg",
+  "karmakand|मुकदमा / कोर्ट केस|5": "media/services/cards/legal_victory.jpg",
+  "karmakand|बिजनेस कार्य सिद्धि|6": "media/services/cards/business_prosperity.jpg",
+  "karmakand|लक्ष्मी प्राप्ति-हवन तीन दिवसीय तीन ब्राह्मणों द्वारा|7": "media/services/cards/karmakand_lakshmi_prapti_hawan.jpg",
+  "karmakand|चण्डी हवन विधानम्|8": "media/services/cards/karmakand_chandi_hawan_vidhanam.jpg",
+  "karmakand|प्रेत बाधा निवारण|9": "media/services/cards/karmakand_pret_badha_nivaran.jpg",
+  "puja|सत्यनारायण व्रत कथा|10": "media/services/cards/puja_satyanarayan_vrat_katha.jpg",
+  "puja|गृहप्रवेश पूजा|11": "media/services/cards/puja_grihpravesh_puja.jpg",
+  "puja|नामकरण संस्कार|12": "media/services/cards/puja_namkaran_sanskar.jpg",
+  "puja|गृह शांति हवन|13": "media/services/cards/puja_grih_shanti_hawan.jpg",
+  "puja|जन्मदिवस पूजा हवन|14": "media/services/cards/puja_janmdivas_puja_hawan.jpg",
+  "puja|सुन्दरकाण्ड पाठ संगीतमय|15": "media/services/cards/puja_sundarkand_path_sangeetmay.jpg",
+  "puja|नवग्रह शान्ति हवन|16": "media/services/cards/puja_navgrah_shanti_hawan.jpg",
+  "puja|नवग्रह जाप नव ब्राह्मणों द्वारा तीन दिवसीय|17": "media/services/cards/puja_navgrah_jaap_three_day.jpg",
+  "puja|चण्डी हवन विधानम्|18": "media/services/cards/puja_chandi_hawan_vidhanam.jpg",
+  "jaap|महामृत्युंजय जप सात ब्राह्मणों द्वारा पाँच दिवसीय|19": "media/services/cards/jaap_mahamrityunjay_jaap.jpg",
+  "jaap|सुन्दरकाण्ड पाठ|20": "media/services/cards/jaap_sundarkand_path.jpg",
+  "jaap|बंगलामुखी जप सात ब्राह्मणों द्वारा सात दिवसीय|21": "media/services/cards/jaap_banglamukhi_jaap.jpg",
+  "jaap|गौ दान गौशाला|22": "media/services/cards/jaap_gau_daan_gaushala.jpg",
+  "jaap|दुर्गा सप्त शती पाठ|23": "media/services/cards/jaap_durga_sapt_shati_path.jpg",
+  "abhishek|रुद्राभिषेक|24": "media/services/cards/abhishek_rudrabhishek.jpg",
+  "abhishek|गरुण पुराण सात दिवसीय|25": "media/services/cards/abhishek_garun_puran_seven_day.jpg",
+  "abhishek|तेरहवीं संस्कार|26": "media/services/cards/abhishek_terahvi_sanskar.jpg"
+};
+
+function normalizeServiceName(value) {
+  return String(value || '')
+    .replace(/—/g, '-')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function findMatchingKey(source, service) {
+  var requested = normalizeServiceName(service);
+  if (!requested) return '';
+
+  for (var key in source) {
+    if (!Object.prototype.hasOwnProperty.call(source, key)) continue;
+    var normalizedKey = normalizeServiceName(key);
+    if (
+      normalizedKey === requested ||
+      normalizedKey.indexOf(requested) !== -1 ||
+      requested.indexOf(normalizedKey) !== -1
+    ) {
+      return key;
+    }
+  }
+
+  return '';
+}
+
+function extractServiceFromCard(card, fallbackTitle) {
+  var inlineHandler = card.getAttribute('onclick') || '';
+  var match = inlineHandler.match(/openBooking\('([\s\S]*?)'\)/);
+  return match && match[1] ? match[1] : fallbackTitle;
+}
+
+function buildServiceCardKey(service, category, index) {
+  return String(category || '') + '|' + String(service || '') + '|' + String(index || 0);
+}
+
+function getServiceAmount(service) {
+  var matchedKey = findMatchingKey(SERVICE_PRICES, service);
+  return matchedKey ? Number(SERVICE_PRICES[matchedKey] || 0) : 0;
+}
+
+function getServiceVisualFor(service, category, index) {
+  var cardKey = buildServiceCardKey(service, category, index);
+  if (SERVICE_CARD_VISUALS[cardKey]) {
+    return SERVICE_CARD_VISUALS[cardKey];
+  }
+  var serviceVisuals = typeof SERVICE_VISUALS !== 'undefined' && SERVICE_VISUALS ? SERVICE_VISUALS : {};
+  var matchedKey = findMatchingKey(serviceVisuals, service);
+  return matchedKey ? serviceVisuals[matchedKey] : 'media/services/sacred_path.jpg';
+}
+
+function getEstimatedPriceLabel(service) {
+  if (normalizeServiceName(service) === normalizeServiceName(MIRCHI_HAWAN_SERVICE)) {
+    return '₹500 / person';
+  }
+  var amount = getServiceAmount(service);
+  return amount ? formatCurrency(amount) : 'Custom pricing';
+}
+
+function getLocationAvailabilityLabel(allowedLocations) {
+  if (!allowedLocations || !allowedLocations.length) return 'Temple / Home';
+  if (allowedLocations.length === 1 && allowedLocations[0] === 'At the Temple') {
+    return 'Temple only';
+  }
+  if (allowedLocations.length === 2 && allowedLocations.indexOf('At the Temple') === -1) {
+    return 'Home / Other location';
+  }
+  return 'Temple / Home / Other';
+}
+
+function getServiceModalNote(service) {
+  if (normalizeServiceName(service) === normalizeServiceName(MIRCHI_HAWAN_SERVICE)) {
+    return 'This is a samuhik hawan with a fixed slot from 15 July 2026 to 29 July 2026, 8 PM – 9 PM. Final participant count is confirmed during booking.';
+  }
+  return 'The temple team confirms final scheduling, samagri requirements, and exact seva coordination after your booking request is submitted.';
+}
+
+function createServiceActionButton(label, className, onClick) {
+  var button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'service-action-btn ' + className;
+  button.textContent = label;
+  button.addEventListener('click', function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    onClick();
+  });
+  return button;
+}
+
+function openServiceLearn(detailKey, service) {
+  var modal = document.getElementById('modal');
+  if (!modal) return;
+
+  var details = SERVICE_CARD_DETAILS[detailKey] || SERVICE_CARD_DETAILS[normalizeServiceName(service)];
+  if (!details) {
+    var allowedLocations = getAllowedLocationsForService(service);
+    details = {
+      title: service,
+      description: 'Learn more about this ritual and proceed to booking when you are ready.',
+      image: getServiceVisualFor(service),
+      price: getEstimatedPriceLabel(service),
+      location: getLocationHelpText(service, allowedLocations),
+      note: getServiceModalNote(service)
+    };
+  }
+
+  document.getElementById('modal-title').textContent = details.title;
+  document.getElementById('modal-image').src = details.image;
+  document.getElementById('modal-image').alt = details.title;
+  document.getElementById('modal-description').textContent = details.description;
+  document.getElementById('modal-price').textContent = details.price;
+  document.getElementById('modal-location').textContent = details.location;
+  document.getElementById('modal-note').textContent = details.note;
+
+  var bookBtn = document.getElementById('modal-book-btn');
+  if (bookBtn) {
+    bookBtn.onclick = function() {
+      closeModal();
+      openBooking(service);
+    };
+  }
+
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function enhanceServiceCards() {
+  var grid = document.getElementById('services-grid');
+  if (!grid) return;
+
+  var cards = grid.querySelectorAll('.service-card');
+  for (var i = 0; i < cards.length; i++) {
+    var card = cards[i];
+    var nameEl = card.querySelector('.service-name');
+    var descEl = card.querySelector('.service-desc');
+    if (!nameEl || !descEl) continue;
+
+    var title = nameEl.textContent.trim();
+    var service = extractServiceFromCard(card, title);
+    var category = card.getAttribute('data-cat') || '';
+    var description = descEl.textContent.trim();
+    var allowedLocations = getAllowedLocationsForService(service);
+    var detailKey = buildServiceCardKey(service, category, i);
+    var visual = getServiceVisualFor(service, category, i);
+
+    SERVICE_CARD_DETAILS[detailKey] = {
+      title: title,
+      description: description,
+      image: visual,
+      price: getEstimatedPriceLabel(service),
+      location: getLocationHelpText(service, allowedLocations),
+      note: getServiceModalNote(service)
+    };
+    SERVICE_CARD_DETAILS[normalizeServiceName(service)] = SERVICE_CARD_DETAILS[detailKey];
+
+    card.removeAttribute('onclick');
+    card.style.cursor = 'default';
+    card.setAttribute('role', 'group');
+    card.setAttribute('aria-label', title);
+    card.innerHTML = '';
+
+    var media = document.createElement('div');
+    media.className = 'service-card-media';
+
+    var img = document.createElement('img');
+    img.src = visual;
+    img.alt = title;
+    img.loading = 'lazy';
+    media.appendChild(img);
+
+    var body = document.createElement('div');
+    body.className = 'service-card-body';
+
+    var serviceName = document.createElement('div');
+    serviceName.className = 'service-name';
+    serviceName.textContent = title;
+
+    var serviceDesc = document.createElement('div');
+    serviceDesc.className = 'service-desc';
+    serviceDesc.textContent = description;
+
+    var meta = document.createElement('div');
+    meta.className = 'service-meta';
+
+    var price = document.createElement('span');
+    price.className = 'service-price';
+    price.textContent = getEstimatedPriceLabel(service);
+
+    var location = document.createElement('span');
+    location.className = 'service-location-pill';
+    location.textContent = getLocationAvailabilityLabel(allowedLocations);
+
+    meta.appendChild(price);
+    meta.appendChild(location);
+
+    var actions = document.createElement('div');
+    actions.className = 'service-actions';
+    actions.appendChild(createServiceActionButton('Book', 'service-book-btn', (function(selectedService) {
+      return function() {
+        openBooking(selectedService);
+      };
+    })(service)));
+    actions.appendChild(createServiceActionButton('Learn', 'service-learn-btn', (function(selectedService) {
+      var selectedDetailKey = detailKey;
+      return function() {
+        openServiceLearn(selectedDetailKey, selectedService);
+      };
+    })(service)));
+
+    body.appendChild(serviceName);
+    body.appendChild(serviceDesc);
+    body.appendChild(meta);
+    body.appendChild(actions);
+
+    card.appendChild(media);
+    card.appendChild(body);
+  }
+}
 
   function selectServiceAndScroll(service) {
     var serviceSelect = document.getElementById('f-service');
     if (!serviceSelect) return;
 
-    var normalizedRequested = String(service).replace(/—/g, '-').replace(/\s+/g, ' ').trim();
+  var normalizedRequested = normalizeServiceName(service);
     var matchedValue = '';
 
     for (var i = 0; i < serviceSelect.options.length; i++) {
       var option = serviceSelect.options[i];
-      var normalizedOption = String(option.text).replace(/—/g, '-').replace(/\s+/g, ' ').trim();
+    var normalizedOption = normalizeServiceName(option.text);
 
       if (
         normalizedOption === normalizedRequested ||
@@ -43,16 +294,22 @@ var modalService = '';
   }
 
     function closeModal() {
-    document.getElementById('modal').classList.remove('active');
+    var modal = document.getElementById('modal');
+    if (!modal) return;
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('modal').addEventListener('click', function(e) {
-      if (e.target === this) closeModal();
-    });
+    var modal = document.getElementById('modal');
+    if (modal) {
+      modal.addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+      });
+    }
+    enhanceServiceCards();
     var today = new Date().toISOString().split('T')[0];
     document.getElementById('f-date').min = today;
-    document.getElementById('m-date').min = today;
 
     document.getElementById('f-loc').addEventListener('change', toggleAddressField);
     document.getElementById('f-service').addEventListener('change', applyServiceLocationRules);
@@ -69,6 +326,10 @@ var modalService = '';
       whatsappInput.addEventListener('blur', ensurePreferredWhatsappNumber);
       syncPreferredWhatsappNumber();
     }
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') closeModal();
+    });
 
     applyServiceLocationRules();
     updateAvailableTimeSlots();
@@ -97,7 +358,7 @@ var modalService = '';
   const MIRCHI_HAWAN_TIME = "8 PM – 9 PM";
 
   function isMirchiHawanService(service) {
-    return service === MIRCHI_HAWAN_SERVICE;
+    return normalizeServiceName(service) === normalizeServiceName(MIRCHI_HAWAN_SERVICE);
   }
 
   function getMirchiParticipantCount() {
@@ -331,14 +592,6 @@ var modalService = '';
     setTimeout(function() { t.classList.remove('show'); }, 4000);
   }
 
-  function submitModal() {
-    var name = document.getElementById('m-name').value.trim();
-    var phone = document.getElementById('m-phone').value.trim();
-    if (!name || !phone) { alert('Please fill name and mobile number.'); return; }
-    closeModal();
-    showToast('Booking request received for ' + name + '! We will call you on ' + phone + '. Jay Mata Di!');
-  }
-
     const SERVICE_PRICES = {
     "श्री बंगलामुखी हवन": 3100,
     "Mirchi Hawan": 500,
@@ -404,7 +657,8 @@ var modalService = '';
   };
 
   function getAllowedLocationsForService(service) {
-    return SERVICE_LOCATION_RULES[service] || ["At the Temple", "At My Home", "Other Location"];
+    var matchedKey = findMatchingKey(SERVICE_LOCATION_RULES, service);
+    return matchedKey ? SERVICE_LOCATION_RULES[matchedKey] : ["At the Temple", "At My Home", "Other Location"];
   }
 
   function getLocationHelpText(service, allowedLocations) {
