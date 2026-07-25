@@ -4,6 +4,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import Razorpay from "razorpay";
 import crypto from "crypto";
+import bookingConfig from "../booking-config.json" with { type: "json" };
 
 const app = express();
 
@@ -94,72 +95,16 @@ const bookingSchema = new mongoose.Schema(
 
 const Booking = mongoose.models.Booking || mongoose.model("Booking", bookingSchema);
 
-const MIRCHI_HAWAN_SERVICE = "Mirchi Hawan";
-const MIRCHI_HAWAN_RATE = 500;
-const MIRCHI_HAWAN_START = "2026-07-15";
-const MIRCHI_HAWAN_END = "2026-07-29";
-const MIRCHI_HAWAN_TIME = "8 PM – 9 PM";
-const TRAVEL_CHARGES = {
-  "At the Temple": 0,
-  "At My Home": 700,
-  "Other Location": 1000
-};
-const SERVICE_PRICES = {
-  "श्री बंगलामुखी हवन": 3100,
-  "Mirchi Hawan": 500,
-  "नज़र बाधा निवारण": 3100,
-  "तन्त्र बाधा निवारण": 5100,
-  "शत्रु बाधा": 5100,
-  "मुकदमा / कोर्ट केस": 3100,
-  "बिजनेस कार्य सिद्धि": 2100,
-  "लक्ष्मी प्राप्ति-हवन तीन दिवसीय तीन ब्राह्मणों द्वारा": 21000,
-  "चण्डी हवन विधानम्": 5100,
-  "प्रेत बाधा निवारण": 2100,
-  "सत्यनारायण व्रत कथा": 5100,
-  "गृहप्रवेश पूजा": 5100,
-  "नामकरण संस्कार": 5100,
-  "गृह शांति हवन": 3100,
-  "जन्मदिवस पूजा हवन": 5100,
-  "सुन्दरकाण्ड पाठ संगीतमय": 8100,
-  "नवग्रह शान्ति हवन": 5100,
-  "नवग्रह जाप नव ब्राह्मणों द्वारा तीन दिवसीय": 31000,
-  "महामृत्युंजय जप सात ब्राह्मणों द्वारा पाँच दिवसीय": 80000,
-  "सुन्दरकाण्ड पाठ": 5100,
-  "बंगलामुखी जप सात ब्राह्मणों द्वारा सात दिवसीय": 115000,
-  "गौ दान गौशाला": 1100,
-  "दुर्गा सप्त शती पाठ — 9 पाठ": 21000,
-  "रुद्राभिषेक": 5100,
-  "गरुण पुराण सात दिवसीय": 11000,
-  "तेरहवीं संस्कार": 11000
-};
-const SERVICE_LOCATION_RULES = {
-  "श्री बंगलामुखी हवन": ["At the Temple"],
-  "Mirchi Hawan": ["At the Temple"],
-  "नज़र बाधा निवारण": ["At the Temple"],
-  "तन्त्र बाधा निवारण": ["At the Temple"],
-  "शत्रु बाधा": ["At the Temple"],
-  "मुकदमा / कोर्ट केस": ["At the Temple"],
-  "बिजनेस कार्य सिद्धि": ["At the Temple"],
-  "लक्ष्मी प्राप्ति-हवन तीन दिवसीय तीन ब्राह्मणों द्वारा": ["At the Temple"],
-  "प्रेत बाधा निवारण": ["At the Temple"],
-  "सत्यनारायण व्रत कथा": ["At My Home", "Other Location"],
-  "गृहप्रवेश पूजा": ["At My Home", "Other Location"],
-  "नामकरण संस्कार": ["At My Home", "Other Location"],
-  "गृह शांति हवन": ["At My Home", "Other Location"],
-  "जन्मदिवस पूजा हवन": ["At My Home", "Other Location"],
-  "सुन्दरकाण्ड पाठ संगीतमय": ["At My Home", "Other Location"],
-  "नवग्रह शान्ति हवन": ["At My Home", "Other Location"],
-  "नवग्रह जाप नव ब्राह्मणों द्वारा तीन दिवसीय": ["At the Temple"],
-  "चण्डी हवन विधानम्": ["At the Temple", "At My Home", "Other Location"],
-  "महामृत्युंजय जप सात ब्राह्मणों द्वारा पाँच दिवसीय": ["At the Temple"],
-  "सुन्दरकाण्ड पाठ": ["At My Home", "Other Location"],
-  "बंगलामुखी जप सात ब्राह्मणों द्वारा सात दिवसीय": ["At the Temple"],
-  "गौ दान गौशाला": ["At the Temple"],
-  "दुर्गा सप्त शती पाठ — 9 पाठ": ["At the Temple", "At My Home", "Other Location"],
-  "रुद्राभिषेक": ["At the Temple", "At My Home", "Other Location"],
-  "गरुण पुराण सात दिवसीय": ["At My Home", "Other Location"],
-  "तेरहवीं संस्कार": ["At My Home", "Other Location"]
-};
+const { mirchiHawan = {}, travelCharges = {}, servicePrices = {}, serviceLocationRules = {} } =
+  bookingConfig;
+const MIRCHI_HAWAN_SERVICE = mirchiHawan.service || "Mirchi Hawan";
+const MIRCHI_HAWAN_RATE = Number(mirchiHawan.rate) || 500;
+const MIRCHI_HAWAN_START = mirchiHawan.start || "2026-07-15";
+const MIRCHI_HAWAN_END = mirchiHawan.end || "2026-07-29";
+const MIRCHI_HAWAN_TIME = mirchiHawan.time || "8 PM – 9 PM";
+const TRAVEL_CHARGES = travelCharges;
+const SERVICE_PRICES = servicePrices;
+const SERVICE_LOCATION_RULES = serviceLocationRules;
 
 function isMirchiHawanService(service) {
   return service === MIRCHI_HAWAN_SERVICE;
