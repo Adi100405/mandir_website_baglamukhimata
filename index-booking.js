@@ -67,11 +67,9 @@ const BACKEND_URL =
     var email = document.getElementById('f-email').value.trim();
     var note = document.getElementById('f-note').value.trim();
     var pricing = calculateBookingPrice();
-    var isMirchi = isMirchiHawanService(service);
-    var participants = getMirchiParticipantCount();
     var gotraToSend = gotra;
-    var timeToSend = isMirchi ? MIRCHI_HAWAN_TIME : time;
-    var locationToSend = isMirchi ? 'At the Temple' : location;
+    var timeToSend = time;
+    var locationToSend = location;
     var finalNote = buildBookingNote(note, service);
     var payBtn = document.getElementById('booking-pay-btn');
 
@@ -92,11 +90,6 @@ const BACKEND_URL =
 
     if (email && !isValidEmailAddress(email)) {
       alert("Please enter a valid email address.");
-      return;
-    }
-
-    if (isMirchi && participants < 1) {
-      alert("Please enter a valid number of participants for Mirchi Hawan.");
       return;
     }
 
@@ -144,7 +137,7 @@ const BACKEND_URL =
           time: timeToSend,
           location: locationToSend,
           address: address,
-          participants: participants,
+          participants: 1,
           note: finalNote
         })
       });

@@ -32,15 +32,6 @@
 <nav>
   <div class="nav-brand-wrap">
     <div class="nav-brand">🛕 Shri Shakti Mandir,Greater Noida</div>
-    <button
-      class="special-gift-btn"
-      type="button"
-      title="View Mirchi Hawan special event"
-      aria-label="View Mirchi Hawan special event"
-      onclick="document.getElementById('special-event').scrollIntoView({ behavior: 'smooth', block: 'start' });"
-    >
-      <span class="special-gift-icon">🎁</span>
-    </button>
 </div>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
@@ -58,72 +49,6 @@
   <p class="hero-sub">Where devotion meets divinity — Book your sacred rituals online</p>
   <div class="hero-buttons">
     <a href="#booking" class="btn-primary">📿 Book Puja / Hawan</a>
-  </div>
-</section>
-
-<!-- SPECIAL EVENT -->
-<section class="special-event-section" id="special-event">
-  <div class="special-event-shell">
-    <div class="special-event-topline">✨ Limited Period Sacred Event</div>
-    <div class="special-event-heading">
-      <div>
-        <p class="section-label" style="color:#ffd978; margin-bottom:0.6rem;">Featured Offering</p>
-        <h2 class="special-event-title">Mirchi Hawan Mahotsav</h2>
-        <p class="special-event-copy">
-          Join this special <strong>samuhik hawan</strong> at Shri Shakti Mandir during the sacred event window.
-          The hawan is conducted in one fixed daily slot, with simple per-person booking so devotees can participate together with ease.
-        </p>
-      </div>
-      <div class="special-event-pricebox">
-        <strong>₹500</strong>
-        <span>Per person contribution</span>
-      </div>
-    </div>
-
-    <div class="special-event-grid">
-      <div class="special-event-card">
-        <h3>Event details</h3>
-        <p>
-          This is a dedicated seasonal offering for devotees who want to participate in the collective Mirchi Hawan at the temple.
-          No special pandit allotment is needed, because the ritual is performed as a shared group event.
-        </p>
-
-        <div class="special-event-points">
-          <div class="special-event-point">
-            <span class="special-event-point-label">Dates</span>
-            <span class="special-event-point-value">15 July 2026 to 29 July 2026</span>
-          </div>
-          <div class="special-event-point">
-            <span class="special-event-point-label">Time</span>
-            <span class="special-event-point-value">8 PM to 9 PM only</span>
-          </div>
-          <div class="special-event-point">
-            <span class="special-event-point-label">Format</span>
-            <span class="special-event-point-value">Samuhik Hawan</span>
-          </div>
-          <div class="special-event-point">
-            <span class="special-event-point-label">Venue</span>
-            <span class="special-event-point-value">At the Temple</span>
-          </div>
-        </div>
-
-        <div class="special-event-cta">
-          <button class="special-event-btn" type="button" onclick="openBooking('Mirchi Hawan')">🌶️ Book Mirchi Hawan</button>
-          <a class="special-event-link" href="#booking">📿 Open booking form</a>
-        </div>
-      </div>
-
-      <div class="special-event-card">
-        <h3>How booking works</h3>
-        <p>
-          When you select <strong>Mirchi Hawan</strong> in the booking form, a participant field appears automatically.
-          The total amount is calculated as <strong>number of participants × ₹500</strong>, and the form locks the service to its fixed event slot.
-        </p>
-        <p class="special-event-note">
-          The shining gift icon beside the temple name will always bring visitors back to this event section quickly.
-        </p>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -180,12 +105,6 @@
       <div class="service-name">श्री बंगलामुखी हवन</div>
       <div class="service-desc">The most powerful hawan dedicated to Maa Baglamukhi — performed for divine protection, victory, and removal of all obstacles.</div>
       <span class="service-price">Book</span>
-    </div>
-    <div class="service-card" data-cat="karmakand" onclick="openBooking('Mirchi Hawan')">
-      <div class="service-icon">🌶️</div>
-      <div class="service-name">Mirchi Hawan</div>
-      <div class="service-desc">A samuhik hawan available only from 15 July 2026 to 29 July 2026, with a fixed slot of 8 PM – 9 PM. Booking is charged at ₹500 per person.</div>
-      <span class="service-price">₹500 / person</span>
     </div>
     <div class="service-card" data-cat="karmakand" onclick="openBooking('नज़र बाधा निवारण')">
       <div class="service-icon">👁️</div>
@@ -572,7 +491,6 @@
             <option value="">— Select Service —</option>
             <optgroup label="— कर्मकांड —">
             <option>श्री बंगलामुखी हवन</option>
-            <option>Mirchi Hawan</option>
             <option>नज़र बाधा निवारण</option>
             <option>तन्त्र बाधा निवारण</option>
             <option>शत्रु बाधा</option>
@@ -606,11 +524,6 @@
             </optgroup>
           </select>
         </div>
-        <div class="form-group" id="mirchi-participants-group" style="display:none;">
-          <label>Number of Participants *</label>
-          <input type="number" id="f-participants" min="1" step="1" value="1" placeholder="Enter number of participants" />
-          <small id="mirchi-info" class="location-help">Samuhik hawan. ₹500 per person. Available only from 15-07-2026 to 29-07-2026, 8 PM – 9 PM.</small>
-        </div>
         <div class="form-group" id="gotra-group">
           <label>Gotra</label>
           <input type="text" id="f-gotra" placeholder="Enter your gotra" />
@@ -628,7 +541,6 @@
             <option value="Forenoon (9 AM – 12 PM)" data-end-hour="12">Forenoon (9 AM – 12 PM)</option>
             <option value="Afternoon (12 PM – 4 PM)" data-end-hour="16">Afternoon (12 PM – 4 PM)</option>
             <option value="Evening (4 PM – 7 PM)" data-end-hour="19">Evening (4 PM – 7 PM)</option>
-            <option value="8 PM – 9 PM" data-end-hour="21" data-special="mirchi-hawan" disabled hidden>8 PM – 9 PM</option>
           </select>
           <small id="time-help" class="location-help">Select a date first. Past time slots are disabled automatically for today.</small>
         </div>

@@ -95,20 +95,11 @@ const bookingSchema = new mongoose.Schema(
 
 const Booking = mongoose.models.Booking || mongoose.model("Booking", bookingSchema);
 
-const { mirchiHawan = {}, travelCharges = {}, servicePrices = {}, serviceLocationRules = {} } =
+const { travelCharges = {}, servicePrices = {}, serviceLocationRules = {} } =
   bookingConfig;
-const MIRCHI_HAWAN_SERVICE = mirchiHawan.service || "Mirchi Hawan";
-const MIRCHI_HAWAN_RATE = Number(mirchiHawan.rate) || 500;
-const MIRCHI_HAWAN_START = mirchiHawan.start || "2026-07-15";
-const MIRCHI_HAWAN_END = mirchiHawan.end || "2026-07-29";
-const MIRCHI_HAWAN_TIME = mirchiHawan.time || "8 PM – 9 PM";
 const TRAVEL_CHARGES = travelCharges;
 const SERVICE_PRICES = servicePrices;
 const SERVICE_LOCATION_RULES = serviceLocationRules;
-
-function isMirchiHawanService(service) {
-  return service === MIRCHI_HAWAN_SERVICE;
-}
 
 function getAllowedLocationsForService(service) {
   return SERVICE_LOCATION_RULES[service] || ["At the Temple", "At My Home", "Other Location"];
@@ -127,13 +118,9 @@ function resolveBookingPricing({ service = "", location = "", participants = 1 }
 
   const allowedLocations = getAllowedLocationsForService(normalizedService);
   const safeLocation = allowedLocations.includes(location) ? location : allowedLocations[0];
-  const participantCount = isMirchiHawanService(normalizedService) ? getParticipantCount(participants) : 1;
-  const baseCost = isMirchiHawanService(normalizedService)
-    ? participantCount * MIRCHI_HAWAN_RATE
-    : Number(SERVICE_PRICES[normalizedService] || 0);
-  const travelCost = isMirchiHawanService(normalizedService)
-    ? 0
-    : Number(TRAVEL_CHARGES[safeLocation] || 0);
+  const participantCount = getParticipantCount(participants);
+  const baseCost = Number(SERVICE_PRICES[normalizedService] || 0);
+  const travelCost = Number(TRAVEL_CHARGES[safeLocation] || 0);
 
   return {
     service: normalizedService,
@@ -206,16 +193,9 @@ app.post("/create-booking", async (req, res) => {
 
     const safeDate = safeText(date);
     const safeGotra = safeText(gotra || pandit);
-    const safeTime = isMirchiHawanService(pricing.service) ? MIRCHI_HAWAN_TIME : safeText(time);
+    const safeTime = safeText(time);
     const safeAddress =
       pricing.location === "At My Home" || pricing.location === "Other Location" ? safeText(address) : "";
-
-    if (
-      isMirchiHawanService(pricing.service) &&
-      (!safeDate || safeDate < MIRCHI_HAWAN_START || safeDate > MIRCHI_HAWAN_END)
-    ) {
-      return res.status(400).json({ error: "Mirchi Hawan is available only during the event dates." });
-    }
 
     if ((pricing.location === "At My Home" || pricing.location === "Other Location") && !safeAddress) {
       return res.status(400).json({ error: "Address is required for home or outside bookings." });

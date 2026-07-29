@@ -1,11 +1,4 @@
 {
-  "mirchiHawan": {
-    "service": "Mirchi Hawan",
-    "rate": 500,
-    "start": "2026-07-15",
-    "end": "2026-07-29",
-    "time": "8 PM – 9 PM"
-  },
   "travelCharges": {
     "At the Temple": 0,
     "At My Home": 700,
@@ -13,7 +6,6 @@
   },
   "servicePrices": {
     "श्री बंगलामुखी हवन": 3100,
-    "Mirchi Hawan": 500,
     "नज़र बाधा निवारण": 3100,
     "तन्त्र बाधा निवारण": 5100,
     "शत्रु बाधा": 5100,
@@ -41,7 +33,6 @@
   },
   "serviceLocationRules": {
     "श्री बंगलामुखी हवन": ["At the Temple"],
-    "Mirchi Hawan": ["At the Temple"],
     "नज़र बाधा निवारण": ["At the Temple"],
     "तन्त्र बाधा निवारण": ["At the Temple"],
     "शत्रु बाधा": ["At the Temple"],

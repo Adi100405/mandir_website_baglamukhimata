@@ -12,11 +12,6 @@
 })();
 
 var BOOKING = window.BOOKING_CONFIG;
-var MIRCHI_HAWAN_SERVICE = (BOOKING.mirchiHawan && BOOKING.mirchiHawan.service) || 'Mirchi Hawan';
-var MIRCHI_HAWAN_RATE = Number(BOOKING.mirchiHawan && BOOKING.mirchiHawan.rate) || 500;
-var MIRCHI_HAWAN_START = (BOOKING.mirchiHawan && BOOKING.mirchiHawan.start) || '2026-07-15';
-var MIRCHI_HAWAN_END = (BOOKING.mirchiHawan && BOOKING.mirchiHawan.end) || '2026-07-29';
-var MIRCHI_HAWAN_TIME = (BOOKING.mirchiHawan && BOOKING.mirchiHawan.time) || '8 PM – 9 PM';
 var SERVICE_PRICES = BOOKING.servicePrices || {};
 var TRAVEL_CHARGES = BOOKING.travelCharges || {};
 var SERVICE_LOCATION_RULES = BOOKING.serviceLocationRules || {};
@@ -25,32 +20,31 @@ var modalService = '';
 var SERVICE_CARD_DETAILS = {};
 var SERVICE_CARD_VISUALS = {
   "karmakand|श्री बंगलामुखी हवन|0": "media/services/cards/karmakand_shri_banglamukhi_hawan.jpg",
-  "karmakand|Mirchi Hawan|1": "media/services/cards/karmakand_mirchi_hawan.jpg",
-  "karmakand|नज़र बाधा निवारण|2": "media/services/cards/karmakand_nazar_badha_nivaran.jpg",
-  "karmakand|तन्त्र बाधा निवारण|3": "media/services/cards/karmakand_tantra_badha_nivaran.jpg",
-  "karmakand|शत्रु बाधा|4": "media/services/cards/protection_ritual.jpg",
-  "karmakand|मुकदमा / कोर्ट केस|5": "media/services/cards/legal_victory.jpg",
-  "karmakand|बिजनेस कार्य सिद्धि|6": "media/services/cards/business_prosperity.jpg",
-  "karmakand|लक्ष्मी प्राप्ति-हवन तीन दिवसीय तीन ब्राह्मणों द्वारा|7": "media/services/cards/karmakand_lakshmi_prapti_hawan.jpg",
-  "karmakand|चण्डी हवन विधानम्|8": "media/services/cards/karmakand_chandi_hawan_vidhanam.jpg",
-  "karmakand|प्रेत बाधा निवारण|9": "media/services/cards/karmakand_pret_badha_nivaran.jpg",
-  "puja|सत्यनारायण व्रत कथा|10": "media/services/cards/puja_satyanarayan_vrat_katha.jpg",
-  "puja|गृहप्रवेश पूजा|11": "media/services/cards/puja_grihpravesh_puja.jpg",
-  "puja|नामकरण संस्कार|12": "media/services/cards/puja_namkaran_sanskar.jpg",
-  "puja|गृह शांति हवन|13": "media/services/cards/puja_grih_shanti_hawan.jpg",
-  "puja|जन्मदिवस पूजा हवन|14": "media/services/cards/puja_janmdivas_puja_hawan.jpg",
-  "puja|सुन्दरकाण्ड पाठ संगीतमय|15": "media/services/cards/puja_sundarkand_path_sangeetmay.jpg",
-  "puja|नवग्रह शान्ति हवन|16": "media/services/cards/puja_navgrah_shanti_hawan.jpg",
-  "puja|नवग्रह जाप नव ब्राह्मणों द्वारा तीन दिवसीय|17": "media/services/cards/puja_navgrah_jaap_three_day.jpg",
-  "puja|चण्डी हवन विधानम्|18": "media/services/cards/puja_chandi_hawan_vidhanam.jpg",
-  "jaap|महामृत्युंजय जप सात ब्राह्मणों द्वारा पाँच दिवसीय|19": "media/services/cards/jaap_mahamrityunjay_jaap.jpg",
-  "jaap|सुन्दरकाण्ड पाठ|20": "media/services/cards/jaap_sundarkand_path.jpg",
-  "jaap|बंगलामुखी जप सात ब्राह्मणों द्वारा सात दिवसीय|21": "media/services/cards/jaap_banglamukhi_jaap.jpg",
-  "jaap|गौ दान गौशाला|22": "media/services/cards/jaap_gau_daan_gaushala.jpg",
-  "jaap|दुर्गा सप्त शती पाठ|23": "media/services/cards/jaap_durga_sapt_shati_path.jpg",
-  "abhishek|रुद्राभिषेक|24": "media/services/cards/abhishek_rudrabhishek.jpg",
-  "abhishek|गरुण पुराण सात दिवसीय|25": "media/services/cards/abhishek_garun_puran_seven_day.jpg",
-  "abhishek|तेरहवीं संस्कार|26": "media/services/cards/abhishek_terahvi_sanskar.jpg"
+  "karmakand|नज़र बाधा निवारण|1": "media/services/cards/karmakand_nazar_badha_nivaran.jpg",
+  "karmakand|तन्त्र बाधा निवारण|2": "media/services/cards/karmakand_tantra_badha_nivaran.jpg",
+  "karmakand|शत्रु बाधा|3": "media/services/cards/protection_ritual.jpg",
+  "karmakand|मुकदमा / कोर्ट केस|4": "media/services/cards/legal_victory.jpg",
+  "karmakand|बिजनेस कार्य सिद्धि|5": "media/services/cards/business_prosperity.jpg",
+  "karmakand|लक्ष्मी प्राप्ति-हवन तीन दिवसीय तीन ब्राह्मणों द्वारा|6": "media/services/cards/karmakand_lakshmi_prapti_hawan.jpg",
+  "karmakand|चण्डी हवन विधानम्|7": "media/services/cards/karmakand_chandi_hawan_vidhanam.jpg",
+  "karmakand|प्रेत बाधा निवारण|8": "media/services/cards/karmakand_pret_badha_nivaran.jpg",
+  "puja|सत्यनारायण व्रत कथा|9": "media/services/cards/puja_satyanarayan_vrat_katha.jpg",
+  "puja|गृहप्रवेश पूजा|10": "media/services/cards/puja_grihpravesh_puja.jpg",
+  "puja|नामकरण संस्कार|11": "media/services/cards/puja_namkaran_sanskar.jpg",
+  "puja|गृह शांति हवन|12": "media/services/cards/puja_grih_shanti_hawan.jpg",
+  "puja|जन्मदिवस पूजा हवन|13": "media/services/cards/puja_janmdivas_puja_hawan.jpg",
+  "puja|सुन्दरकाण्ड पाठ संगीतमय|14": "media/services/cards/puja_sundarkand_path_sangeetmay.jpg",
+  "puja|नवग्रह शान्ति हवन|15": "media/services/cards/puja_navgrah_shanti_hawan.jpg",
+  "puja|नवग्रह जाप नव ब्राह्मणों द्वारा तीन दिवसीय|16": "media/services/cards/puja_navgrah_jaap_three_day.jpg",
+  "puja|चण्डी हवन विधानम्|17": "media/services/cards/puja_chandi_hawan_vidhanam.jpg",
+  "jaap|महामृत्युंजय जप सात ब्राह्मणों द्वारा पाँच दिवसीय|18": "media/services/cards/jaap_mahamrityunjay_jaap.jpg",
+  "jaap|सुन्दरकाण्ड पाठ|19": "media/services/cards/jaap_sundarkand_path.jpg",
+  "jaap|बंगलामुखी जप सात ब्राह्मणों द्वारा सात दिवसीय|20": "media/services/cards/jaap_banglamukhi_jaap.jpg",
+  "jaap|गौ दान गौशाला|21": "media/services/cards/jaap_gau_daan_gaushala.jpg",
+  "jaap|दुर्गा सप्त शती पाठ|22": "media/services/cards/jaap_durga_sapt_shati_path.jpg",
+  "abhishek|रुद्राभिषेक|23": "media/services/cards/abhishek_rudrabhishek.jpg",
+  "abhishek|गरुण पुराण सात दिवसीय|24": "media/services/cards/abhishek_garun_puran_seven_day.jpg",
+  "abhishek|तेरहवीं संस्कार|25": "media/services/cards/abhishek_terahvi_sanskar.jpg"
 };
 
 function normalizeServiceName(value) {
@@ -106,9 +100,6 @@ function getServiceVisualFor(service, category, index) {
 }
 
 function getEstimatedPriceLabel(service) {
-  if (normalizeServiceName(service) === normalizeServiceName(MIRCHI_HAWAN_SERVICE)) {
-    return '₹500 / person';
-  }
   var amount = getServiceAmount(service);
   return amount ? formatCurrency(amount) : 'Custom pricing';
 }
@@ -125,9 +116,6 @@ function getLocationAvailabilityLabel(allowedLocations) {
 }
 
 function getServiceModalNote(service) {
-  if (normalizeServiceName(service) === normalizeServiceName(MIRCHI_HAWAN_SERVICE)) {
-    return 'This is a samuhik hawan with a fixed slot from 15 July 2026 to 29 July 2026, 8 PM – 9 PM. Final participant count is confirmed during booking.';
-  }
   return 'The temple team confirms final scheduling, samagri requirements, and exact seva coordination after your booking request is submitted.';
 }
 
@@ -338,8 +326,6 @@ function enhanceServiceCards() {
     document.getElementById('f-service').addEventListener('change', applyServiceLocationRules);
     document.getElementById('f-date').addEventListener('change', updateAvailableTimeSlots);
     document.getElementById('f-time').addEventListener('change', validateSelectedTimeSlot);
-    document.getElementById('f-participants').addEventListener('input', calculateBookingPrice);
-    document.getElementById('f-participants').addEventListener('change', calculateBookingPrice);
 
     var phoneInput = document.getElementById('f-phone');
     var whatsappInput = document.getElementById('f-whatsapp');
@@ -374,22 +360,8 @@ function enhanceServiceCards() {
       a.getDate() === b.getDate();
   }
 
-  function isMirchiHawanService(service) {
-    return normalizeServiceName(service) === normalizeServiceName(MIRCHI_HAWAN_SERVICE);
-  }
-
-  function getMirchiParticipantCount() {
-    var input = document.getElementById('f-participants');
-    var count = Number(input && input.value ? input.value : 1);
-    if (!Number.isFinite(count) || count < 1) count = 1;
-    return Math.floor(count);
-  }
-
   function buildBookingNote(note, service) {
-    if (!isMirchiHawanService(service)) return note;
-    var participants = getMirchiParticipantCount();
-    var extra = 'Samuhik Hawan | Participants: ' + participants + ' | Rate: ₹500 per person | Slot: 8 PM – 9 PM';
-    return note ? note + ' | ' + extra : extra;
+    return note;
   }
 
   function isValidEmailAddress(email) {
@@ -441,68 +413,10 @@ function enhanceServiceCards() {
     return resolved;
   }
 
-  function updateMirchiHawanFields() {
-    var service = document.getElementById('f-service').value;
-    var participantsGroup = document.getElementById('mirchi-participants-group');
-    var participantsInput = document.getElementById('f-participants');
-    var dateInput = document.getElementById('f-date');
-    var timeSelect = document.getElementById('f-time');
-    var fixedTimeOption = timeSelect ? timeSelect.querySelector('option[data-special="mirchi-hawan"]') : null;
-    var today = new Date().toISOString().split('T')[0];
-    var isMirchi = isMirchiHawanService(service);
-
-    if (participantsGroup) {
-      participantsGroup.style.display = isMirchi ? '' : 'none';
-    }
-    if (participantsInput) {
-      participantsInput.required = isMirchi;
-      if (!isMirchi || !participantsInput.value || Number(participantsInput.value) < 1) {
-        participantsInput.value = '1';
-      }
-    }
-    if (dateInput) {
-      dateInput.min = isMirchi ? MIRCHI_HAWAN_START : today;
-      dateInput.max = isMirchi ? MIRCHI_HAWAN_END : '';
-      if (isMirchi && dateInput.value && (dateInput.value < MIRCHI_HAWAN_START || dateInput.value > MIRCHI_HAWAN_END)) {
-        dateInput.value = '';
-      }
-    }
-    if (timeSelect) {
-      for (var i = 0; i < timeSelect.options.length; i++) {
-        var option = timeSelect.options[i];
-        if (!option.value) continue;
-        var isSpecial = option.getAttribute('data-special') === 'mirchi-hawan';
-        if (isMirchi) {
-          option.hidden = !isSpecial;
-          option.disabled = !isSpecial;
-          option.textContent = option.value;
-        } else {
-          option.hidden = isSpecial;
-          option.disabled = isSpecial;
-          option.textContent = option.value;
-        }
-      }
-      if (fixedTimeOption) {
-        fixedTimeOption.hidden = !isMirchi;
-        fixedTimeOption.disabled = !isMirchi;
-      }
-      if (isMirchi) {
-        timeSelect.value = MIRCHI_HAWAN_TIME;
-      } else if (timeSelect.value === MIRCHI_HAWAN_TIME) {
-        timeSelect.value = '';
-      }
-    }
-
-    updateAvailableTimeSlots();
-    calculateBookingPrice();
-  }
-
   function updateAvailableTimeSlots() {
-    var service = document.getElementById('f-service').value;
     var dateInput = document.getElementById('f-date');
     var timeSelect = document.getElementById('f-time');
     var timeHelp = document.getElementById('time-help');
-    var fixedTimeOption = timeSelect ? timeSelect.querySelector('option[data-special="mirchi-hawan"]') : null;
     if (!dateInput || !timeSelect) return true;
 
     var selectedDate = parseLocalDateInput(dateInput.value);
@@ -514,55 +428,12 @@ function enhanceServiceCards() {
       selectedDate = null;
     }
 
-    if (isMirchiHawanService(service)) {
-      var isValidWindow = !!dateInput.value && dateInput.value >= MIRCHI_HAWAN_START && dateInput.value <= MIRCHI_HAWAN_END;
-      var isTodayMirchi = selectedDate && isSameLocalDate(selectedDate, now);
-      var mirchiClosedForToday = isTodayMirchi && now.getHours() >= 21;
-
-      for (var m = 0; m < timeSelect.options.length; m++) {
-        var specialOption = timeSelect.options[m];
-        if (!specialOption.value) continue;
-        var isSpecialOption = specialOption.getAttribute('data-special') === 'mirchi-hawan';
-        specialOption.hidden = !isSpecialOption;
-        specialOption.textContent = specialOption.value;
-        specialOption.disabled = !isSpecialOption || !isValidWindow || mirchiClosedForToday;
-      }
-
-      if (fixedTimeOption && !fixedTimeOption.disabled) {
-        timeSelect.value = MIRCHI_HAWAN_TIME;
-      } else if (timeSelect.value === MIRCHI_HAWAN_TIME) {
-        timeSelect.value = '';
-      }
-
-      if (timeHelp) {
-        if (!selectedDate) {
-          timeHelp.textContent = 'Mirchi Hawan is available only from 15-07-2026 to 29-07-2026, with a fixed slot of 8 PM – 9 PM.';
-        } else if (!isValidWindow) {
-          timeHelp.textContent = 'Please choose a date between 15-07-2026 and 29-07-2026 for Mirchi Hawan.';
-        } else if (mirchiClosedForToday) {
-          timeHelp.textContent = 'Today’s Mirchi Hawan slot has already closed. Please choose the next available date.';
-        } else {
-          timeHelp.textContent = 'Mirchi Hawan has a fixed daily slot of 8 PM – 9 PM.';
-        }
-      }
-
-      return isValidWindow && !mirchiClosedForToday;
-    }
-
     var isToday = selectedDate && isSameLocalDate(selectedDate, now);
     var availableCount = 0;
 
     for (var i = 0; i < timeSelect.options.length; i++) {
       var option = timeSelect.options[i];
       if (!option.value) continue;
-
-      var isSpecialRegular = option.getAttribute('data-special') === 'mirchi-hawan';
-      if (isSpecialRegular) {
-        option.hidden = true;
-        option.disabled = true;
-        option.textContent = option.value;
-        continue;
-      }
 
       option.hidden = false;
       var endHour = Number(option.getAttribute('data-end-hour') || 0);
@@ -649,7 +520,8 @@ function enhanceServiceCards() {
     }
 
     toggleAddressField();
-    updateMirchiHawanFields();
+    updateAvailableTimeSlots();
+    calculateBookingPrice();
   }
 
   function formatCurrency(amount) {
@@ -661,17 +533,15 @@ function enhanceServiceCards() {
     var location = document.getElementById('f-loc').value;
     var allowedLocations = getAllowedLocationsForService(service);
     var safeLocation = allowedLocations.indexOf(location) !== -1 ? location : (allowedLocations[0] || "At the Temple");
-    var isMirchi = isMirchiHawanService(service);
-    var participants = getMirchiParticipantCount();
-    var baseCost = isMirchi ? participants * MIRCHI_HAWAN_RATE : (SERVICE_PRICES[service] || 0);
-    var travelCost = isMirchi ? 0 : (TRAVEL_CHARGES[safeLocation] || 0);
+    var baseCost = (SERVICE_PRICES[service] || 0);
+    var travelCost = (TRAVEL_CHARGES[safeLocation] || 0);
     var totalCost = baseCost + travelCost;
 
     document.getElementById('ritual-cost').textContent = formatCurrency(baseCost);
     document.getElementById('travel-cost').textContent = formatCurrency(travelCost);
     document.getElementById('total-price').textContent = formatCurrency(totalCost);
 
-    return { baseCost, travelCost, totalCost, participants };
+    return { baseCost, travelCost, totalCost, participants: 1 };
   }
 
   function toggleAddressField() {
@@ -704,11 +574,9 @@ function enhanceServiceCards() {
     var email = document.getElementById('f-email').value.trim();
     var note = document.getElementById('f-note').value.trim();
     var pricing = calculateBookingPrice();
-    var isMirchi = isMirchiHawanService(service);
-    var participants = getMirchiParticipantCount();
     var gotraToSend = gotra;
-    var timeToSend = isMirchi ? MIRCHI_HAWAN_TIME : time;
-    var locationToSend = isMirchi ? 'At the Temple' : location;
+    var timeToSend = time;
+    var locationToSend = location;
     var finalNote = buildBookingNote(note, service);
     var submitBtn = document.querySelector('.form-submit');
 
@@ -729,11 +597,6 @@ function enhanceServiceCards() {
 
     if (email && !isValidEmailAddress(email)) {
       alert("Please enter a valid email address.");
-      return;
-    }
-
-    if (isMirchi && participants < 1) {
-      alert("Please enter a valid number of participants for Mirchi Hawan.");
       return;
     }
 
@@ -770,7 +633,7 @@ function enhanceServiceCards() {
         location: locationToSend,
         address: address,
         email: email,
-        participants: participants,
+        participants: 1,
         note: finalNote
       });
 
@@ -782,7 +645,6 @@ function enhanceServiceCards() {
       document.getElementById('f-whatsapp').dataset.autoFill = 'auto';
       document.getElementById('f-service').value = '';
       document.getElementById('f-gotra').value = '';
-      document.getElementById('f-participants').value = '1';
       document.getElementById('f-date').value = '';
       document.getElementById('f-time').selectedIndex = 0;
       document.getElementById('f-loc').selectedIndex = 0;
