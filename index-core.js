@@ -1,23 +1,40 @@
-(function loadBookingConfigSync() {
-  if (window.BOOKING_CONFIG) return;
-  try {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'booking-config.json?v=20260725b', false);
-    xhr.send(null);
-    if (xhr.status >= 200 && xhr.status < 300) {
-      window.BOOKING_CONFIG = JSON.parse(xhr.responseText);
-    }
-  } catch (err) {}
-  window.BOOKING_CONFIG = window.BOOKING_CONFIG || {};
-})();
+window.BOOKING_CONFIG = window.BOOKING_CONFIG || {};
+window.BOOKING_CONFIG_READY =
+  window.BOOKING_CONFIG_READY ||
+  fetch('booking-config.json?v=20260725b', { cache: 'no-cache' })
+    .then(function(response) {
+      if (!response.ok) {
+        throw new Error('Failed to load booking configuration.');
+      }
+      return response.json();
+    })
+    .then(function(config) {
+      window.BOOKING_CONFIG = config || {};
+      return window.BOOKING_CONFIG;
+    })
+    .catch(function() {
+      window.BOOKING_CONFIG = window.BOOKING_CONFIG || {};
+      return window.BOOKING_CONFIG;
+    });
 
-var BOOKING = window.BOOKING_CONFIG;
-var SERVICE_PRICES = BOOKING.servicePrices || {};
-var TRAVEL_CHARGES = BOOKING.travelCharges || {};
-var SERVICE_LOCATION_RULES = BOOKING.serviceLocationRules || {};
+var BOOKING = {};
+var SERVICE_PRICES = {};
+var TRAVEL_CHARGES = {};
+var SERVICE_LOCATION_RULES = {};
+
+function applyBookingConfig(config) {
+  BOOKING = config || {};
+  SERVICE_PRICES = BOOKING.servicePrices || {};
+  TRAVEL_CHARGES = BOOKING.travelCharges || {};
+  SERVICE_LOCATION_RULES = BOOKING.serviceLocationRules || {};
+}
+
+applyBookingConfig(window.BOOKING_CONFIG);
 
 var modalService = '';
 var SERVICE_CARD_DETAILS = {};
+var bookingUiInitialized = false;
+var timeSlotRefreshTimer = null;
 var SERVICE_CARD_VISUALS = {
   "karmakand|श्री बंगलामुखी हवन|0": "media/services/cards/karmakand_shri_banglamukhi_hawan.jpg",
   "karmakand|नज़र बाधा निवारण|1": "media/services/cards/karmakand_nazar_badha_nivaran.jpg",
@@ -311,39 +328,70 @@ function enhanceServiceCards() {
     document.body.style.overflow = '';
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
-    var modal = document.getElementById('modal');
-    if (modal) {
-      modal.addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-      });
-    }
-    enhanceServiceCards();
-    var today = new Date().toISOString().split('T')[0];
-    document.getElementById('f-date').min = today;
+async function initializeBookingUi() {
+  if (bookingUiInitialized) return;
+  bookingUiInitialized = true;
 
-    document.getElementById('f-loc').addEventListener('change', toggleAddressField);
-    document.getElementById('f-service').addEventListener('change', applyServiceLocationRules);
-    document.getElementById('f-date').addEventListener('change', updateAvailableTimeSlots);
-    document.getElementById('f-time').addEventListener('change', validateSelectedTimeSlot);
-
-    var phoneInput = document.getElementById('f-phone');
-    var whatsappInput = document.getElementById('f-whatsapp');
-    if (phoneInput && whatsappInput) {
-      phoneInput.addEventListener('input', syncPreferredWhatsappNumber);
-      whatsappInput.addEventListener('input', handlePreferredWhatsappInput);
-      whatsappInput.addEventListener('blur', ensurePreferredWhatsappNumber);
-      syncPreferredWhatsappNumber();
-    }
-
-    document.addEventListener('keydown', function(event) {
-      if (event.key === 'Escape') closeModal();
+  var modal = document.getElementById('modal');
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
     });
+  }
+  enhanceServiceCards();
 
-    applyServiceLocationRules();
-    updateAvailableTimeSlots();
-    setInterval(updateAvailableTimeSlots, 60000);
+  var dateInput = document.getElementById('f-date');
+  var locationSelect = document.getElementById('f-loc');
+  var serviceSelect = document.getElementById('f-service');
+  var timeSelect = document.getElementById('f-time');
+  var phoneInput = document.getElementById('f-phone');
+  var whatsappInput = document.getElementById('f-whatsapp');
+
+  if (dateInput) {
+    dateInput.min = new Date().toISOString().split('T')[0];
+    dateInput.addEventListener('change', updateAvailableTimeSlots);
+  }
+
+  if (locationSelect) {
+    locationSelect.addEventListener('change', toggleAddressField);
+  }
+
+  if (serviceSelect) {
+    serviceSelect.addEventListener('change', applyServiceLocationRules);
+  }
+
+  if (timeSelect) {
+    timeSelect.addEventListener('change', validateSelectedTimeSlot);
+  }
+
+  if (phoneInput && whatsappInput) {
+    phoneInput.addEventListener('input', syncPreferredWhatsappNumber);
+    whatsappInput.addEventListener('input', handlePreferredWhatsappInput);
+    whatsappInput.addEventListener('blur', ensurePreferredWhatsappNumber);
+    syncPreferredWhatsappNumber();
+  }
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') closeModal();
   });
+
+  applyServiceLocationRules();
+  updateAvailableTimeSlots();
+
+  if (!timeSlotRefreshTimer) {
+    timeSlotRefreshTimer = window.setInterval(updateAvailableTimeSlots, 60000);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  window.BOOKING_CONFIG_READY
+    .then(function(config) {
+      applyBookingConfig(config);
+    })
+    .finally(function() {
+      initializeBookingUi();
+    });
+});
 
 
   function parseLocalDateInput(value) {
@@ -578,7 +626,7 @@ function enhanceServiceCards() {
     var timeToSend = time;
     var locationToSend = location;
     var finalNote = buildBookingNote(note, service);
-    var submitBtn = document.querySelector('.form-submit');
+    var submitBtn = document.getElementById('booking-pay-btn');
 
     if (!name || !phone || !whatsapp || !service || !date || !timeToSend) {
       alert("Please fill all required fields, including preferred WhatsApp number and preferred time slot.");

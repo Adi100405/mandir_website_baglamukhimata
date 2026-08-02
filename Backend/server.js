@@ -95,11 +95,11 @@ const bookingSchema = new mongoose.Schema(
 
 const Booking = mongoose.models.Booking || mongoose.model("Booking", bookingSchema);
 
-const { travelCharges = {}, servicePrices = {}, serviceLocationRules = {} } =
-  bookingConfig;
+const { travelCharges = {}, servicePrices = {}, serviceLocationRules = {} } = bookingConfig;
 const TRAVEL_CHARGES = travelCharges;
 const SERVICE_PRICES = servicePrices;
 const SERVICE_LOCATION_RULES = serviceLocationRules;
+const BOOKING_FILTER = { purpose: "booking" };
 
 function getAllowedLocationsForService(service) {
   return SERVICE_LOCATION_RULES[service] || ["At the Temple", "At My Home", "Other Location"];
@@ -466,7 +466,10 @@ app.get("/booking/:bookingId", async (req, res) => {
 
 app.get("/admin/bookings", adminAuth, async (_req, res) => {
   try {
-    const items = await Booking.find({ purpose: "booking" })
+    const items = await Booking.find(BOOKING_FILTER)
+      .select(
+        "bookingId name phone preferredWhatsapp email service gotra pandit date time location address participants amount paymentStatus bookingStatus createdAtUnix"
+      )
       .sort({ createdAtUnix: -1 })
       .lean();
 
@@ -554,14 +557,16 @@ app.get("/admin/donations", adminAuth, async (_req, res) => {
 
 app.get("/admin/dashboard-summary", adminAuth, async (_req, res) => {
   try {
-    const bookings = await Booking.find({ purpose: "booking" }).lean();
-
-    const cashPendingBookings = bookings.filter((item) => item.paymentStatus === "cash pending").length;
-    const cashReceivedBookings = bookings.filter((item) => item.paymentStatus === "cash received").length;
-    const completedBookings = bookings.filter((item) => item.bookingStatus === "completed").length;
+    const [totalBookings, cashPendingBookings, cashReceivedBookings, completedBookings] =
+      await Promise.all([
+        Booking.countDocuments(BOOKING_FILTER),
+        Booking.countDocuments({ ...BOOKING_FILTER, paymentStatus: "cash pending" }),
+        Booking.countDocuments({ ...BOOKING_FILTER, paymentStatus: "cash received" }),
+        Booking.countDocuments({ ...BOOKING_FILTER, bookingStatus: "completed" })
+      ]);
 
     return res.json({
-      totalBookings: bookings.length,
+      totalBookings,
       cashPendingBookings,
       cashReceivedBookings,
       completedBookings,

@@ -226,7 +226,18 @@
       });
 
       if (!res.ok) {
-        throw new Error(await res.text());
+        const contentType = res.headers.get("content-type") || "";
+        let message = "Request failed.";
+        try {
+          if (contentType.includes("application/json")) {
+            const data = await res.json();
+            message = data.error || data.message || message;
+          } else {
+            const text = await res.text();
+            message = text || message;
+          }
+        } catch (_error) {}
+        throw new Error(message);
       }
 
       return res.json();
@@ -239,16 +250,30 @@
         : "Cash later";
     }
 
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function displayText(value, fallback = "—") {
+      const text = String(value ?? "").trim();
+      return text ? escapeHtml(text) : fallback;
+    }
+
     function cashBadge(status) {
       const normalized = (status || "").toLowerCase();
       const cls = normalized === "cash received" ? "cash received" : "cash pending";
-      return `<span class="badge ${cls}">${status || "cash pending"}</span>`;
+      return `<span class="badge ${cls}">${escapeHtml(status || "cash pending")}</span>`;
     }
 
     function bookingBadge(status) {
       const normalized = (status || "").toLowerCase();
       const cls = normalized === "completed" ? "completed" : "submitted";
-      return `<span class="badge ${cls}">${status || "submitted"}</span>`;
+      return `<span class="badge ${cls}">${escapeHtml(status || "submitted")}</span>`;
     }
 
     async function loadSummary() {
@@ -266,6 +291,32 @@
       });
       await loadAll();
     }
+
+    document.getElementById("bookings-body").addEventListener("click", async (event) => {
+      const button = event.target.closest("[data-booking-id]");
+      if (!button) return;
+
+      const bookingId = button.getAttribute("data-booking-id") || "";
+      if (!bookingId) return;
+
+      const updates = {};
+      if (button.hasAttribute("data-payment-status")) {
+        updates.paymentStatus = button.getAttribute("data-payment-status");
+      }
+      if (button.hasAttribute("data-booking-status")) {
+        updates.bookingStatus = button.getAttribute("data-booking-status");
+      }
+
+      if (!Object.keys(updates).length) return;
+
+      button.disabled = true;
+      try {
+        await updateBooking(bookingId, updates);
+      } catch (error) {
+        button.disabled = false;
+        alert(error.message || "Failed to update booking.");
+      }
+    });
 
     async function loadBookings() {
       const el = document.getElementById("bookings-body");
@@ -300,22 +351,22 @@
             <tbody>
               ${data.items.map((b) => `
                 <tr>
-                  <td><strong>${b.bookingId || b.id}</strong></td>
-                  <td>${b.name}<div class="muted">${b.email && b.email !== "—" ? b.email : ""}</div></td>
-                  <td>${b.phone}<div class="muted">WhatsApp: ${b.preferredWhatsapp || b.phone || "—"}</div></td>
-                  <td>${b.service}</td>
-                  <td>${b.gotra || "—"}</td>
-                  <td>${b.date || "—"}</td>
-                  <td>${b.time || "—"}</td>
-                  <td>${b.location}<div class="muted">${b.address && b.address !== "—" ? b.address : ""}</div></td>
+                  <td><strong>${displayText(b.bookingId || b.id)}</strong></td>
+                  <td>${displayText(b.name)}<div class="muted">${b.email && b.email !== "—" ? displayText(b.email, "") : ""}</div></td>
+                  <td>${displayText(b.phone)}<div class="muted">WhatsApp: ${displayText(b.preferredWhatsapp || b.phone || "—")}</div></td>
+                  <td>${displayText(b.service)}</td>
+                  <td>${displayText(b.gotra)}</td>
+                  <td>${displayText(b.date)}</td>
+                  <td>${displayText(b.time)}</td>
+                  <td>${displayText(b.location)}<div class="muted">${b.address && b.address !== "—" ? displayText(b.address, "") : ""}</div></td>
                   <td>${fmtAmount(b.amount)}</td>
                   <td>${cashBadge(b.paymentStatus)}</td>
                   <td>${bookingBadge(b.bookingStatus)}</td>
                   <td>
                     <div class="row-actions">
-                      <button onclick="updateBooking('${b.bookingId || b.id}', { paymentStatus: 'cash received' })">Mark Cash Received</button>
-                      <button onclick="updateBooking('${b.bookingId || b.id}', { bookingStatus: 'completed' })">Mark Completed</button>
-                      <button onclick="updateBooking('${b.bookingId || b.id}', { paymentStatus: 'cash pending', bookingStatus: 'submitted' })">Reset</button>
+                      <button type="button" data-booking-id="${escapeHtml(b.bookingId || b.id)}" data-payment-status="cash received">Mark Cash Received</button>
+                      <button type="button" data-booking-id="${escapeHtml(b.bookingId || b.id)}" data-booking-status="completed">Mark Completed</button>
+                      <button type="button" data-booking-id="${escapeHtml(b.bookingId || b.id)}" data-payment-status="cash pending" data-booking-status="submitted">Reset</button>
                     </div>
                   </td>
                 </tr>
@@ -324,7 +375,7 @@
           </table>
         `;
       } catch (e) {
-        el.innerHTML = `<div class="empty">Error: ${e.message}</div>`;
+        el.innerHTML = `<div class="empty">Error: ${escapeHtml(e.message || "Unable to load bookings.")}</div>`;
       }
     }
 
