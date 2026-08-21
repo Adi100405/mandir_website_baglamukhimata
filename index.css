@@ -152,6 +152,15 @@
       overflow: hidden;
       white-space: nowrap;
     }
+    .hero-mantra-strip {
+      width: min(1240px, calc(100% - 2rem));
+      margin-top: 1.2rem;
+      border: 1px solid rgba(212,175,55,0.28);
+      border-radius: 999px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.16);
+      position: relative;
+      z-index: 1;
+    }
     .marquee-inner {
       display: inline-block;
       animation: marquee 25s linear infinite;
@@ -1062,6 +1071,15 @@
       .hero {
         background-size: cover;
         background-position: center 16%;
+      }
+      .hero-mantra-strip {
+        width: calc(100% - 1rem);
+        margin-top: 0.85rem;
+        border-radius: 18px;
+      }
+      .marquee-strip {
+        font-size: 0.78rem;
+        letter-spacing: 1px;
       }
       nav { padding: 0 1rem; }
       .nav-links { display: none; }
