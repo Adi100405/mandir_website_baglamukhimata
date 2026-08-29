@@ -111,9 +111,21 @@ function getServiceVisualFor(service, category, index) {
   if (SERVICE_CARD_VISUALS[cardKey]) {
     return SERVICE_CARD_VISUALS[cardKey];
   }
+  var shortName = normalizeServiceName(String(service || '').split(/[-–—]/)[0]);
+  if (shortName) {
+    for (var key in SERVICE_CARD_VISUALS) {
+      if (!Object.prototype.hasOwnProperty.call(SERVICE_CARD_VISUALS, key)) continue;
+      var keyParts = key.split('|');
+      if (category && keyParts[0] !== category) continue;
+      var keyName = normalizeServiceName(keyParts[1] || '');
+      if (keyName && (keyName === shortName || keyName.indexOf(shortName) !== -1 || shortName.indexOf(keyName) !== -1)) {
+        return SERVICE_CARD_VISUALS[key];
+      }
+    }
+  }
   var serviceVisuals = typeof SERVICE_VISUALS !== 'undefined' && SERVICE_VISUALS ? SERVICE_VISUALS : {};
   var matchedKey = findMatchingKey(serviceVisuals, service);
-  return matchedKey ? serviceVisuals[matchedKey] : 'media/services/sacred_path.jpg';
+  return matchedKey ? serviceVisuals[matchedKey] : 'media/site/shri_baglamukhi_mata.jpg';
 }
 
 function getEstimatedPriceLabel(service) {
