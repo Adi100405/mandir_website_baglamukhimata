@@ -684,7 +684,7 @@
     .form-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,107,0,0.3); }
 
     /* ── TIMING ── */
-    .timing-section { max-width: 1000px; margin: 0 auto; }
+    .timing-section { max-width: 1200px; margin: 0 auto; }
     .timing-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -717,6 +717,69 @@
       font-size: 1.1rem;
     }
     .timing-desc { font-size: 0.8rem; color: rgba(255,248,238,0.5); margin-top: 0.4rem; }
+
+    /* ── TIMING TABLES ── */
+    .timing-tables {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+      text-align: left;
+    }
+    .timing-table-card {
+      background: var(--deep-maroon);
+      border-radius: 14px;
+      border: 1px solid rgba(212,175,55,0.25);
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(61,12,17,0.18);
+    }
+    .timing-table-head {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.9rem 1.2rem;
+      background: linear-gradient(90deg, rgba(212,175,55,0.16), rgba(255,107,0,0.10));
+      border-bottom: 1px solid rgba(212,175,55,0.3);
+    }
+    .timing-table-icon { font-size: 1.6rem; }
+    .timing-table-title {
+      font-family: 'Cinzel', serif;
+      color: var(--gold-light);
+      font-size: 1.02rem;
+      letter-spacing: 0.5px;
+    }
+    .timing-table-sub {
+      font-size: 0.75rem;
+      color: rgba(255,248,238,0.55);
+      font-style: italic;
+      margin-top: 0.1rem;
+    }
+    .timing-table-row {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      padding: 0.55rem 1.2rem;
+      border-bottom: 1px solid rgba(212,175,55,0.12);
+    }
+    .timing-table-row:nth-child(even) { background: rgba(255,248,238,0.03); }
+    .timing-table-row:last-child { border-bottom: none; }
+    .timing-table-time {
+      font-family: 'Cinzel', serif;
+      color: var(--gold);
+      font-size: 0.88rem;
+      white-space: nowrap;
+      min-width: 6.8rem;
+    }
+    .timing-table-event {
+      color: rgba(255,248,238,0.9);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+    .timing-table-event em { color: rgba(255,248,238,0.5); font-style: italic; font-size: 0.82em; }
+
+    @media (max-width: 860px) {
+      .timing-tables { grid-template-columns: 1fr; gap: 1.2rem; }
+    }
 
     /* ── GALLERY ── */
     .gallery-section { background: #f5ede0; padding: 5rem 2rem; }
