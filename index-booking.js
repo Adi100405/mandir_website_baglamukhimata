@@ -3,6 +3,18 @@ const BACKEND_URL =
       ? "http://localhost:5000"
       : "https://mandir-website-baglamukhimata.onrender.com";
 
+  function trackBookingComplete(booking) {
+    try {
+      if (typeof gtag !== 'function') return;
+      gtag('event', 'booking_complete', {
+        booking_id: booking.bookingId,
+        service: booking.service || '',
+        currency: 'INR',
+        value: Number(booking.amount) || 0
+      });
+    } catch (e) { /* ignore */ }
+  }
+
   async function payNow(description = "Booking", meta = null) {
     try {
       if (!(meta && meta.purpose === "booking")) {
@@ -43,6 +55,8 @@ const BACKEND_URL =
       try {
         sessionStorage.setItem("latestBookingReceipt", JSON.stringify(data.booking));
       } catch (e) {}
+
+      trackBookingComplete(data.booking);
 
       window.location.href = `booking-success.html?booking_id=${encodeURIComponent(data.booking.bookingId)}`;
     } catch (err) {
@@ -217,6 +231,8 @@ const BACKEND_URL =
             try {
               sessionStorage.setItem("latestBookingReceipt", JSON.stringify(booking));
             } catch (e) {}
+
+            trackBookingComplete(booking);
 
             window.location.href = `booking-success.html?booking_id=${encodeURIComponent(booking.bookingId)}`;
           } catch (err) {
