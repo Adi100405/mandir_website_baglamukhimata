@@ -1169,6 +1169,14 @@
       .nav-links { display: none; }
       .about-section { grid-template-columns: 1fr; gap: 2rem; }
       .form-grid { grid-template-columns: 1fr; }
+      .booking-body { padding: 1.25rem; }
+      .form-group input, .form-group select, .form-group textarea { width: 100%; box-sizing: border-box; }
+      .featured-pandit-body { flex-direction: column; text-align: center; padding: 2rem 1.2rem; gap: 1.5rem; }
+      .featured-pandit-avatar { width: 160px; height: 160px; }
+      .featured-pandit-avatar::after { top: -4px; left: -4px; right: -4px; bottom: -4px; }
+      .featured-pandit .pandit-spec { max-width: none; }
+      .featured-pandit .pandit-tags { justify-content: center; }
+      .map-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
       .footer-grid { grid-template-columns: 1fr; gap: 1.5rem; }
       .gallery-grid { grid-template-columns: repeat(2, 1fr); }
       .service-actions { grid-template-columns: 1fr; }
