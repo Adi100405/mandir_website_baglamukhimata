@@ -153,16 +153,16 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── MARQUEE ── */
+    /* ── MARQUEE (STATIC STRIP) ── */
     .marquee-strip {
       background: linear-gradient(90deg, var(--deep-maroon), var(--maroon), var(--deep-maroon));
       color: var(--gold-light);
       font-family: 'Cinzel', serif;
       font-size: 1.15rem;
       letter-spacing: 2px;
-      padding: 0.85rem 0;
+      padding: 0.85rem 1.5rem;
       overflow: hidden;
-      white-space: nowrap;
+      text-align: center;
     }
     .hero-mantra-strip {
       width: min(1240px, calc(100% - 2rem));
@@ -177,12 +177,7 @@
       z-index: 1;
     }
     .marquee-inner {
-      display: inline-block;
-      animation: marquee 25s linear infinite;
-    }
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+      display: block;
     }
 
     /* ── SECTIONS ── */
