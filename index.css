@@ -1233,3 +1233,29 @@
   0%,100%{filter:drop-shadow(0 0 20px rgba(255,107,0,0.7));}
   50%{filter:drop-shadow(0 0 35px rgba(255,200,0,0.9));}
 }
+
+/* ── LEARN MORE EXPAND/COLLAPSE ── */
+.learn-more-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+}
+.learn-more-btn {
+  display: inline-block;
+  margin-top: 0.75rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--saffron);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color 0.2s;
+}
+.learn-more-btn:hover { color: var(--deep-saffron); }
+.learn-more-btn.on-dark { color: #FFD700; }
+.learn-more-btn.on-dark:hover { color: #ffe766; }
