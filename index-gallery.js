@@ -1,11 +1,9 @@
 const galleryItems = Array.from(document.querySelectorAll('.gallery-masonry .gallery-card')).map(function (card) {
   const image = card.querySelector('img');
-  const caption = card.querySelector('.gallery-caption');
 
   return {
     src: image ? image.getAttribute('src') || '' : '',
-    alt: image ? image.getAttribute('alt') || 'Temple gallery image' : 'Temple gallery image',
-    caption: caption ? caption.textContent.trim() : ''
+    alt: image ? image.getAttribute('alt') || 'Temple gallery image' : 'Temple gallery image'
   };
 }).filter(function (item) {
   return !!item.src;
@@ -19,14 +17,12 @@ function openGalleryLightbox(index) {
   currentGalleryIndex = index;
   const lightbox = document.getElementById('galleryLightbox');
   const image = document.getElementById('galleryLightboxImage');
-  const caption = document.getElementById('galleryLightboxCaption');
   const item = galleryItems[currentGalleryIndex];
 
-  if (!lightbox || !image || !caption || !item) return;
+  if (!lightbox || !image || !item) return;
 
   image.src = item.src;
   image.alt = item.alt;
-  caption.textContent = item.caption || item.alt || '';
   lightbox.classList.add('active');
   document.body.style.overflow = 'hidden';
 }
